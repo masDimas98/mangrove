@@ -22,15 +22,6 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-Route::get('/monitoring', function () {
-    return view('monitoring/monitoring');
-})->middleware(['auth'])->name('monitoring');
-
-Route::get('/monitoringdetail', function () {
-    return view('monitoring/monitoringdetail');
-})->middleware(['auth'])->name('monitoringdetail');
-
-// Route::get('/kecamatan', 'KecamatanController@index');
 
 Route::resource('kecamatan', 'KecamatanController');
 
@@ -38,9 +29,7 @@ Route::resource('desa', 'DesaController');
 
 Route::resource('lahan', 'LahanController');
 
-Route::get('/user', function () {
-    return view('user/user');
-})->middleware(['user'])->name('user');
+Route::resource('user', 'UserController');
 
 Route::get('/wilayah', function () {
     return view('wilayah/wilayah');
@@ -52,12 +41,19 @@ Route::resource('mangrove', 'MangroveController');
 
 Route::resource('penanaman', 'PenanamanController');
 
+Route::resource('bibit', 'BibitMangroveController');
+Route::get('/bibit/{id}/detail', 'BibitMangroveController@detail')->name('monev');
+
+Route::get('/monitoring', function () {
+    return view('monitoring/monitoring');
+})->middleware(['auth'])->name('monitoring');
+
+Route::get('/monitoringdetail', function () {
+    return view('monitoring/monitoringdetail');
+})->middleware(['auth'])->name('monitoringdetail');
+
 Route::get('/detailtanaman', function () {
     return view('penanaman/detailtanaman');
 })->middleware(['auth'])->name('detailtanaman');
-
-Route::get('/user', function () {
-    return view('user/user');
-})->middleware(['auth'])->name('user');
 
 require __DIR__ . '/auth.php';

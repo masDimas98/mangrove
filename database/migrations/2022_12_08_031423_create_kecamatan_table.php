@@ -16,7 +16,7 @@ class CreateKecamatanTable extends Migration
         Schema::create('kecamatan', function (Blueprint $table) {
             $table->id('idkec', 6)->autoIncrement();
             $table->string('namakec', 35);
-            $table->dateTime('dataakses');
+            $table->dateTime('dataakses')->useCurrent()->useCurrentOnUpdate();
             $table->foreignId('userid');
             $table->timestamps();
         });

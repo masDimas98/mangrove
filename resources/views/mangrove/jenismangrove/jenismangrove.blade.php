@@ -9,12 +9,10 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <ul class="flex border-b">
                 <li class="-mb-px mr-1">
-                    <a class="bg-white inline-block border-l border-t border-r rounded-t py-2 px-4 text-blue-700 font-semibold"
-                        href="#">Jenis</a>
+                    <a class="bg-white inline-block border-l border-t border-r rounded-t py-2 px-4 text-blue-700 font-semibold" href="#">Jenis</a>
                 </li>
                 <li class="mr-1">
-                    <a class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold"
-                        href="{{ url('/mangrove') }}">Daftar</a>
+                    <a class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold" href="{{ url('/mangrove') }}">Daftar</a>
                 </li>
             </ul>
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -27,8 +25,7 @@
                         </div>
                         <div class="">
                             <form action="{{ action('JenisMangroveController@create') }}">
-                                <button
-                                    class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded float-right mb-2">Tambah
+                                <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded float-right mb-2">Tambah
                                 </button>
                             </form>
                         </div>
@@ -44,30 +41,26 @@
                         </thead>
                         <tbody>
                             @foreach ($data as $item)
-                                <tr>
-                                    <td class="border px-4 py-2">{{ $item->namajenislatin }}</td>
-                                    <td class="border px-4 py-2">{{ $item->namajenisindo }}</td>
-                                    <td class="border text-center">
-                                        <form action="{{ route('jenismangrove.destroy', $item->idjenis) }}"
-                                            method="post" id="form_delete">
+                            <tr>
+                                <td class="border px-4 py-2">{{ $item->namajenislatin }}</td>
+                                <td class="border px-4 py-2">{{ $item->namajenisindo }}</td>
+                                <td class="border text-center">
+                                    <form action="{{ route('jenismangrove.destroy', $item->idjenis) }}" method="post" id="form_delete">
 
-                                            <div class="justify-center">
-                                                <a href="{{ route('jenismangrove.edit', $item->idjenis) }}"
-                                                    class="inline-flex pr-5">
-                                                    <img src="{{ url('icon/edit.png') }}" alt="" width="20px"
-                                                        height="20px">
-                                                </a>
+                                        <div class="justify-center">
+                                            <a href="{{ route('jenismangrove.edit', $item->idjenis) }}" class="inline-flex pr-5">
+                                                <img src="{{ url('icon/edit.png') }}" alt="" width="20px" height="20px">
+                                            </a>
 
-                                                <button type="" class="inline-flex" onclick="delete">
-                                                    <img src="{{ url('icon/delete.png') }}" alt=""
-                                                        width="20px" height="20px">
-                                                </button>
-                                            </div>
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
-                                    </td>
-                                </tr>
+                                            <button type="" class="inline-flex" onclick="delete">
+                                                <img src="{{ url('icon/delete.png') }}" alt="" width="20px" height="20px">
+                                            </button>
+                                        </div>
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                </td>
+                            </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -75,6 +68,8 @@
             </div>
         </div>
     </div>
+    <x-slot name="js">
+    </x-slot>
 </x-app-layout>
 <script src="vendor/sweetalert/sweetalert.all.js"></script>
 <script type="text/javascript">

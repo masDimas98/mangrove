@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePenanamanMangrovTable extends Migration
+class CreateBibitMangroveTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,13 @@ class CreatePenanamanMangrovTable extends Migration
      */
     public function up()
     {
-        Schema::create('penanaman_mangrov', function (Blueprint $table) {
-            $table->id('idtanam')->autoIncrement();
+        Schema::create('bibit_mangrove', function (Blueprint $table) {
+            $table->id('idbibit')->autoIncrement();
             $table->foreignId('idmangrove');
-            $table->integer('jmltanam');
-            $table->integer('statustanam');
-            $table->dateTime('dataakses');
+            $table->dateTime('tgltanam');
+            $table->dateTime('dataakses')->useCurrent()->useCurrentOnUpdate();
             $table->foreignId('userid');
-            $table->foreignId('idlahan');
+            $table->string('foto');
             $table->timestamps();
         });
     }
@@ -32,6 +31,6 @@ class CreatePenanamanMangrovTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('penanaman_mangrov');
+        Schema::dropIfExists('bibit_mangrove');
     }
 }

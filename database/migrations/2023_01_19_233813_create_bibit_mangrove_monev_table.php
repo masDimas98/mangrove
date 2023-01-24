@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLahanTable extends Migration
+class CreateBibitMangroveMonevTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,15 @@ class CreateLahanTable extends Migration
      */
     public function up()
     {
-        Schema::create('lahan', function (Blueprint $table) {
-            $table->id('idlahan', 6)->autoIncrement();
-            $table->foreignId('iddesa', 6);
-            $table->string('namalahan', 35);
-            $table->string('kepemilikan', 50);
-            $table->double('luas');
-            $table->double('latitude');
-            $table->double('longitude');
+        Schema::create('bibit_mangrove_monev', function (Blueprint $table) {
+            $table->id('idmonevbibit')->autoIncrement();
+            $table->foreignId('idbibit');
+            $table->dateTime('tglmonev');
+            $table->integer('tinggibibit');
+            $table->integer('jml_daun');
             $table->dateTime('dataakses')->useCurrent()->useCurrentOnUpdate();
             $table->foreignId('userid');
+            $table->string('foto');
             $table->timestamps();
         });
     }
@@ -34,6 +33,6 @@ class CreateLahanTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('lahan');
+        Schema::dropIfExists('bibit_mangrove_monev');
     }
 }

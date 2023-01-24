@@ -8,6 +8,7 @@ use App\Models\LahanModel as lahan;
 use App\Models\MangroveModel as mangrove;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class PenanamanController extends Controller
 {
@@ -54,29 +55,45 @@ class PenanamanController extends Controller
         $request->validate([
             'idmangrove' => 'required|exists:App\Models\MangroveModel,idmangrove',
             'idlahan' => 'required|exists:App\Models\LahanModel,idlahan',
+            'blok_lahan' => 'required',
             'tgltanam' => 'required',
             'jmltanam' => 'required',
             'pihaktanam' => 'required',
             'statustanam' => 'required',
+            'foto' => 'required|file|image|mimes:jpeg,png,jpg|max:100'
         ], [
             'idmangrove.required' => 'Pilih Salah Satu.',
             'idmangrove.exists' => 'Pilih Salah Satu.',
             'idlahan.required' => 'Pilih Salah Satu.',
             'idlahan.exists' => 'Pilih Salah Satu.',
+            'blok_lahan.required' => 'Harus Diisi.',
             'tgltanam.required' => 'Harus Diisi.',
             'jmltanam.required' => 'Harus Diisi.',
             'pihaktanam.required' => 'Harus Diisi.',
-            'statustanam.required' => 'Harus Diisi'
+            'statustanam.required' => 'Harus Diisi.',
+            'foto.required' => 'Harus Diisi.',
+            'foto.image' => 'File harus Berbentuk Image.',
+            'foto.mimes' => 'Bentuk File Harus JPEG, PNG, JPG',
+            'foto.max' => 'besar file maksimal 100kb.'
         ]);
+
+        $file = $request->file('foto');
+        $file_name = time() . '_' . $file->getClientOriginalName();
+        $path = 'image/penanaman';
+        $file->move($path, $file->getClientOriginalName());
+
         $data = array(
             'idmangrove' => $request->idmangrove,
             'idlahan' => $request->idlahan,
+            'blok_lahan' => $request->blok_lahan,
             'tgltanam' => $request->tgltanam,
             'jmltanam' => $request->jmltanam,
-            'pihaktanam' => $request->pihaktanam,
+            'pihak_tanam' => $request->pihaktanam,
             'statustanam' => $request->statustanam,
-            'userid' => auth()->user()->id
+            'userid' => auth()->user()->id,
+            'foto' => $file_name
         );
+
         penanaman::create($data);
 
         Alert::success('Sukses', 'Menyimpan Data Baru');
@@ -104,10 +121,9 @@ class PenanamanController extends Controller
     public function edit($id)
     {
         $mangrove = mangrove::all();
-        $data = penanaman::join('mangrove', 'mangrove.idmangrove', '=', 'penanaman.idmangrove')
-            ->where('idtanam', $id)
-            ->get(['penanaman.*', 'mangrove.mangroveindo']);
-        return view('penanaman/penanaman/form', ['data' => $data, 'mangrove' => $mangrove]);
+        $lahan = lahan::all();
+        $data = penanaman::where('idtanam', $id)->first();
+        return view('penanaman/penanaman/form', ['data' => $data, 'mangrove' => $mangrove, 'lahan' => $lahan]);
     }
 
     /**
@@ -119,28 +135,65 @@ class PenanamanController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $old = penanaman::where('idtanam', $id)->first();
         $request->validate([
             'idmangrove' => 'required|exists:App\Models\MangroveModel,idmangrove',
+            'idlahan' => 'required|exists:App\Models\LahanModel,idlahan',
+            'blok_lahan' => 'required',
             'tgltanam' => 'required',
             'jmltanam' => 'required',
             'pihaktanam' => 'required',
-            'statustanam' => 'required'
+            'statustanam' => 'required',
+            'foto' => 'file|image|mimes:jpeg,png,jpg|max:100'
         ], [
             'idmangrove.required' => 'Pilih Salah Satu.',
             'idmangrove.exists' => 'Pilih Salah Satu.',
+            'idlahan.required' => 'Pilih Salah Satu.',
+            'idlahan.exists' => 'Pilih Salah Satu.',
+            'blok_lahan.required' => 'Harus Diisi.',
             'tgltanam.required' => 'Harus Diisi.',
             'jmltanam.required' => 'Harus Diisi.',
             'pihaktanam.required' => 'Harus Diisi.',
-            'statustanam.required' => 'Harus Diisi'
+            'statustanam.required' => 'Harus Diisi.',
+            'foto.image' => 'File harus Berbentuk Image.',
+            'foto.mimes' => 'Bentuk File Harus JPEG, PNG, JPG',
+            'foto.max' => 'besar file maksimal 100kb.'
         ]);
-        $data = array(
-            'idmangrove' => $request->idmangrove,
-            'tgltanam' => $request->tgltanam,
-            'jmltanam' => $request->jmltanam,
-            'pihaktanam' => $request->pihaktanam,
-            'statustanam' => $request->statustanam,
-            'userid' => auth()->user()->id
-        );
+
+        if ($request->foto != '') {
+            $file = $request->file('foto');
+            $file_name = time() . '_' . $file->getClientOriginalName();
+            $path = 'image/penanaman';
+            if (File::exists(public_path('image/penanaman/' . $old->foto))) {
+                File::delete(public_path('image/penanaman/' . $old->foto));
+            } else {
+                Alert::error('Terjadi Kesalahan', 'File Tidak Ada Pada Sistem');
+                return redirect()->back();
+            }
+            $file->move($path, $file->getClientOriginalName());
+            $data = array(
+                'idmangrove' => $request->idmangrove,
+                'idlahan' => $request->idlahan,
+                'blok_lahan' => $request->blok_lahan,
+                'tgltanam' => $request->tgltanam,
+                'jmltanam' => $request->jmltanam,
+                'pihak_tanam' => $request->pihaktanam,
+                'statustanam' => $request->statustanam,
+                'userid' => auth()->user()->id,
+                'foto' => $file_name
+            );
+        } else {
+            $data = array(
+                'idmangrove' => $request->idmangrove,
+                'idlahan' => $request->idlahan,
+                'blok_lahan' => $request->blok_lahan,
+                'tgltanam' => $request->tgltanam,
+                'jmltanam' => $request->jmltanam,
+                'pihak_tanam' => $request->pihaktanam,
+                'statustanam' => $request->statustanam,
+                'userid' => auth()->user()->id,
+            );
+        }
 
         penanaman::where('idtanam', $id)->update($data);
 
@@ -157,10 +210,16 @@ class PenanamanController extends Controller
      */
     public function destroy($id)
     {
-        penanaman::where('idtanam', $id)->delete();
+        $old = penanaman::where('idtanam', $id)->first();
 
-        Alert::success('Sukses', 'Menghapus Data');
+        if (File::exists(public_path('image/penanaman/' . $old->foto))) {
+            File::delete(public_path('image/penanaman/' . $old->foto));
+            $old = penanaman::where('idtanam', $id)->delete();
 
-        return redirect('penanaman');
+            Alert::success('Sukses', 'Menghapus Data');
+            return redirect('penanaman');
+        }
+        Alert::error('Terjadi Kesalahan', 'File Tidak Ada Pada Sistem');
+        return redirect()->back();
     }
 }

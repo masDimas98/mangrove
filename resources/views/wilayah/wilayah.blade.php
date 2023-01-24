@@ -21,8 +21,7 @@
                                 </div>
                                 <div class="px-6 pt-4 pb-9">
                                     <div class="float-right m-0">
-                                        <a href="/kecamatan"
-                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold mb-3 py-2 px-4 rounded-full">detail</a>
+                                        <a href="/kecamatan" class="bg-blue-500 hover:bg-blue-700 text-white font-bold mb-3 py-2 px-4 rounded-full">detail</a>
 
                                     </div>
                                 </div>
@@ -39,8 +38,7 @@
                                 </div>
                                 <div class="px-6 pt-4 pb-9">
                                     <div class="float-right m-0">
-                                        <a href="/desa"
-                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold mb-3 py-2 px-4 rounded-full">detail</a>
+                                        <a href="/desa" class="bg-blue-500 hover:bg-blue-700 text-white font-bold mb-3 py-2 px-4 rounded-full">detail</a>
 
                                     </div>
                                 </div>
@@ -57,8 +55,7 @@
                                 </div>
                                 <div class="px-6 pt-4 pb-9">
                                     <div class="float-right m-0">
-                                        <a href="/lahan"
-                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold mb-3 py-2 px-4 rounded-full">Detail</a>
+                                        <a href="/lahan" class="bg-blue-500 hover:bg-blue-700 text-white font-bold mb-3 py-2 px-4 rounded-full">Detail</a>
                                     </div>
                                 </div>
                             </div>
@@ -68,4 +65,6 @@
             </div>
         </div>
     </div>
+    <x-slot name="js">
+    </x-slot>
 </x-app-layout>

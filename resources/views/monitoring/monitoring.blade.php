@@ -15,14 +15,13 @@
                 <li class="mr-1">
                     <a class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold"
                         href="{{ route('mangrove') }}"></a>
-                </li>
+            </li>
             </ul> --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                     <div class="grid grid-cols-3">
                         <div>
-                            <button
-                                class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded float-left mb-2">Filter
+                            <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded float-left mb-2">Filter
                             </button>
                         </div>
                         <div class=" mb-2">
@@ -60,8 +59,7 @@
                                 <td class="border text-center">
                                     <div class="justify-center">
                                         <a href="{{ route('monitoringdetail') }}" class="inline-flex">
-                                            <img src="{{ url('icon/detail.png') }}" alt="" width="20px"
-                                                height="20px">
+                                            <img src="{{ url('icon/detail.png') }}" alt="" width="20px" height="20px">
                                         </a>
                                     </div>
                                 </td>
@@ -75,8 +73,7 @@
                                 <td class="border px-4 py-2">Lahan 2</td>
                                 <td class="border text-center">
                                     <a href="{{ route('monitoringdetail') }}" class="inline-flex">
-                                        <img src="{{ url('icon/detail.png') }}" alt="" width="20px"
-                                            height="20px">
+                                        <img src="{{ url('icon/detail.png') }}" alt="" width="20px" height="20px">
                                     </a>
                                 </td>
                             </tr>
@@ -89,8 +86,7 @@
                                 <td class="border px-4 py-2">Lahan 3</td>
                                 <td class="border text-center">
                                     <a href="{{ route('monitoringdetail') }}" class="inline-flex">
-                                        <img src="{{ url('icon/detail.png') }}" alt="" width="20px"
-                                            height="20px">
+                                        <img src="{{ url('icon/detail.png') }}" alt="" width="20px" height="20px">
                                     </a>
                                 </td>
                             </tr>
@@ -100,4 +96,6 @@
             </div>
         </div>
     </div>
+    <x-slot name="js">
+    </x-slot>
 </x-app-layout>

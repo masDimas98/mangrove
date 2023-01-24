@@ -11,22 +11,19 @@
                 <div class="p-6 bg-white border-b border-gray-200">
                     <div class="grid grid-cols-2">
                         <div class="flex">
-                            <select id="kecamatan_select"
-                                class="block py-2.5 px-0 text-sm w-32 text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer mr-4 mb-2">
+                            <select id="kecamatan_select" class="block py-2.5 px-0 text-sm w-32 text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer mr-4 mb-2">
                                 <option value="0">Kecamatan</option>
                                 @foreach ($kecamatan as $item)
-                                    <option value="{{ $item->idkec }}">{{ $item->namakec }}</option>
+                                <option value="{{ $item->idkec }}">{{ $item->namakec }}</option>
                                 @endforeach
                             </select>
-                            <select id="desa_select"
-                                class="block py-2.5 px-0 text-sm w-32 text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer mr-4 mb-2">
+                            <select id="desa_select" class="block py-2.5 px-0 text-sm w-32 text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer mr-4 mb-2">
                                 <option value="0">Desa</option>
                                 @foreach ($desa as $item)
-                                    <option value="{{ $item->iddes }}">{{ $item->namadesa }}</option>
+                                <option value="{{ $item->iddes }}">{{ $item->namadesa }}</option>
                                 @endforeach
                             </select>
-                            <button id="btn_search"
-                                class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded float-right mb-2">Cari
+                            <button id="btn_search" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded float-right mb-2">Cari
                             </button>
                             <form action="#" method="post" id="formSearch">
                                 @method('GET')
@@ -35,8 +32,7 @@
                         </div>
                         <div class="">
                             <form action="{{ action('LahanController@create') }}">
-                                <button type="submit"
-                                    class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded float-right mb-2">Tambah
+                                <button type="submit" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded float-right mb-2">Tambah
                                 </button>
                             </form>
                         </div>
@@ -53,31 +49,27 @@
                         </thead>
                         <tbody>
                             @foreach ($data as $item)
-                                <tr>
-                                    <td class="border px-4 py-2">{{ $item->namalahan }}</td>
-                                    <td class="border px-4 py-2">{{ $item->kepemilikan }}</td>
-                                    <td class="border px-4 py-2">{{ $item->luas }}</td>
-                                    <td class="border text-center">
-                                        <form action="{{ route('lahan.destroy', $item->idlahan) }}" method="post"
-                                            id="form_delete">
-                                            <div class="justify-center">
-                                                <a href="{{ route('lahan.edit', $item->idlahan) }}"
-                                                    class="inline-flex pr-5">
+                            <tr>
+                                <td class="border px-4 py-2">{{ $item->namalahan }}</td>
+                                <td class="border px-4 py-2">{{ $item->kepemilikan }}</td>
+                                <td class="border px-4 py-2">{{ $item->luas }}</td>
+                                <td class="border text-center">
+                                    <form action="{{ route('lahan.destroy', $item->idlahan) }}" method="post" id="form_delete">
+                                        <div class="justify-center">
+                                            <a href="{{ route('lahan.edit', $item->idlahan) }}" class="inline-flex pr-5">
 
-                                                    <img src="{{ url('icon/edit.png') }}" alt="" width="20px"
-                                                        height="20px">
-                                                </a>
+                                                <img src="{{ url('icon/edit.png') }}" alt="" width="20px" height="20px">
+                                            </a>
 
-                                                <button type="" class="inline-flex" onclick="delete">
-                                                    <img src="{{ url('icon/delete.png') }}" alt=""
-                                                        width="20px" height="20px">
-                                                </button>
-                                                @csrf
-                                                @method('DELETE')
-                                            </div>
-                                        </form>
-                                    </td>
-                                </tr>
+                                            <button type="" class="inline-flex" onclick="delete">
+                                                <img src="{{ url('icon/delete.png') }}" alt="" width="20px" height="20px">
+                                            </button>
+                                            @csrf
+                                            @method('DELETE')
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -85,13 +77,17 @@
             </div>
         </div>
     </div>
+    <x-slot name="js">
+    </x-slot>
 </x-app-layout>
 <script src="vendor/sweetalert/sweetalert.all.js"></script>
 <script type="text/javascript">
     var btn = $('#btn_search');
     var kecamatanSelect = $('#kecamatan_select');
     var desaSelect = $('#desa_select');
-    var desa = {!! json_encode($desa) !!}
+    var desa = {
+        !!json_encode($desa) !!
+    }
 
     btn.click(function(e) {
         e.preventDefault();

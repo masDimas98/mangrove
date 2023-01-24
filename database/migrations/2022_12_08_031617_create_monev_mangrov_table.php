@@ -20,7 +20,7 @@ class CreateMonevMangrovTable extends Migration
             $table->integer('tinggi');
             $table->string('lebarbatang');
             $table->integer('statusmonev');
-            $table->dateTime('dataakses');
+            $table->dateTime('dataakses')->useCurrent()->useCurrentOnUpdate();
             $table->foreignId('userid');
             $table->timestamps();
         });

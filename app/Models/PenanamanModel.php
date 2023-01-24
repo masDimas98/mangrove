@@ -19,5 +19,5 @@ class PenanamanModel extends Model
      *
      * @var array
      */
-    protected $fillable = ['idmangrove', 'idlahan', 'idtanam', 'tgltanam', 'jmltanam', 'pihaktanam', 'statustanam', 'userid'];
+    protected $fillable = ['idmangrove', 'idlahan', 'blok_lahan', 'tgltanam', 'jmltanam', 'pihak_tanam', 'statustanam', 'userid', 'foto'];
 }
