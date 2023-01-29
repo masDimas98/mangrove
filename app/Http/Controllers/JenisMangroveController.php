@@ -8,9 +8,17 @@ use Illuminate\Http\Request;
 
 class JenisMangroveController extends Controller
 {
+    protected $menu;
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware(function ($request, $next) {
+            $this->menu = array(
+                'linkF' => '/jenisMangrove',
+                'linkFname' => 'Jenis Mangrove',
+            );
+            return $next($request);
+        });
     }
 
     /**
@@ -21,7 +29,7 @@ class JenisMangroveController extends Controller
     public function index()
     {
         $data = jenismangrove::all();
-        return view('mangrove/jenismangrove/jenismangrove', ['data' => $data]);
+        return view('mangrove/jenismangrove/jenismangrove', ['data' => $data, 'menu' => $this->menu]);
     }
 
     /**
@@ -31,7 +39,8 @@ class JenisMangroveController extends Controller
      */
     public function create()
     {
-        return view('mangrove/jenismangrove/form');
+        $this->menu += ['linkC' => '', 'linkCname' => 'Ubah Data'];
+        return view('mangrove/jenismangrove/form', ['menu' => $this->menu]);
     }
 
     /**
@@ -79,8 +88,9 @@ class JenisMangroveController extends Controller
      */
     public function edit($id)
     {
+        $this->menu += ['linkC' => '', 'linkCname' => 'Ubah Data'];
         $data = jenismangrove::where('idjenis', $id)->first();
-        return view('mangrove/jenismangrove/form', ['data' => $data]);
+        return view('mangrove/jenismangrove/form', ['data' => $data, 'menu' => $this->menu]);
     }
 
     /**

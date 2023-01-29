@@ -1,43 +1,39 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{-- {{ __('Mangrove') }} --}}
+            {{-- {{ __('Penanaman') }} --}}
             @include('components/breadscrumbs')
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <ul class="flex border-b">
+            {{-- <ul class="flex border-b">
                 <li class="-mb-px mr-1">
                     <a class="bg-white inline-block border-l border-t border-r rounded-t py-2 px-4 text-blue-700 font-semibold"
-                        href="#">Jenis</a>
+                        href="#">Penanaman</a>
                 </li>
-                <li class="mr-1">
-                    <a class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold"
-                        href="{{ url('/mangrove') }}">Daftar</a>
-                </li>
-            </ul>
-
+            </ul> --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
+                    <div class="grid grid-cols-3 pb-5">
+                        <div>
+                        </div>
+                        <div>
+                            <h2 class="font-semibold text-xl text-gray-800 leading-tight pt-3 text-center">
+                                {{ __('Daftar Tanam') }}
+                            </h2>
+                        </div>
+                        <div class="">
 
-                    <div class="mb-2">
-                        <h2 class="font-semibold text-xl text-gray-800 leading-tight pt-3 text-center">
-                            {{ __('Daftar Jenis Mangrove') }}
-                        </h2>
+                        </div>
                     </div>
-
                     <hr class="pb-5">
                     <div class="relative overflow-x-auto">
                         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                             <div class="flex items-center justify-between pb-4">
                                 <div>
-                                    <form action="{{ action('JenisMangroveController@create') }}">
-                                        <button
-                                            class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">Tambah
-                                        </button>
-                                    </form>
+
                                 </div>
                                 <label for="table-search" class="sr-only">Search</label>
                                 <div class="relative">
@@ -59,10 +55,22 @@
                                     class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
                                         <th scope="col" class="px-6 py-3">
-                                            Nama Latin
+                                            Mangrove
                                         </th>
                                         <th scope="col" class="px-6 py-3">
-                                            Nama Indonesia
+                                            Tanggal Tanam
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
+                                            Jumlah Tanam
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
+                                            Pihak Tanam
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
+                                            Status Tanam
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
+                                            Lahan
                                         </th>
                                         <th scope="col" class="px-6 py-3">
                                             Aksi
@@ -76,28 +84,29 @@
 
                                             <th scope="row"
                                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ $item->namajenislatin }}
-                                            <th scope="row"
-                                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ $item->namajenisindo }}
-
+                                                {{ $item->mangroveindo }}
+                                            </th>
                                             <td class="px-6 py-4">
-                                                <form action="{{ route('jenismangrove.destroy', $item->idjenis) }}"
-                                                    method="post" id="form_delete">
-
-                                                    <div class="justify-center">
-                                                        <a href="{{ route('jenismangrove.edit', $item->idjenis) }}"
-                                                            class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                                                        |
-                                                        <button
-                                                            class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                                            Delete
-                                                        </button>
-                                                    </div>
-                                                    @csrf
-                                                    @method('DELETE')
-                                                </form>
-                                                {{-- <a href="#"
+                                                {{ $item->tgltanam }}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                {{ $item->jmltanam }}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                {{ $item->pihak_tanam }}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                {{ $item->statustanam }}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                {{ $item->namalahan }}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <a href="{{ route('monitoringdetail', $item->idtanam) }}"
+                                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Detail</a>
+                                            </td>
+                                            </form>
+                                            {{-- <a href="#"
                                                     class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a> --}}
                                             </td>
                                         </tr>
@@ -114,26 +123,3 @@
     <x-slot name="js">
     </x-slot>
 </x-app-layout>
-<script src="vendor/sweetalert/sweetalert.all.js"></script>
-<script type="text/javascript">
-    function delete() {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire(
-                    'Deleted!',
-                    'Your file has been deleted.',
-                    'success'
-                )
-                $('#form_delete').submit();
-            }
-        })
-    }
-</script>

@@ -9,12 +9,21 @@ use App\Models\MangroveModel as mangrove;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Session;
 
 class PenanamanController extends Controller
 {
+    protected $menu;
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware(function ($request, $next) {
+            $this->menu = array(
+                'linkF' => '/penanaman',
+                'linkFname' => 'Penanaman',
+            );
+            return $next($request);
+        });
     }
 
     /**
@@ -29,7 +38,7 @@ class PenanamanController extends Controller
         $data = penanaman::join('mangrove', 'mangrove.idmangrove', '=', 'penanaman_mangrove.idmangrove')
             ->join('lahan', 'lahan.idlahan', '=', 'penanaman_mangrove.idlahan')
             ->get(['penanaman_mangrove.*', 'mangrove.mangroveindo', 'lahan.namalahan']);
-        return view('penanaman/penanaman/penanaman', ['data' => $data, 'mangrove' => $mangrove, 'lahan' => $lahan]);
+        return view('penanaman/penanaman/penanaman', ['data' => $data, 'mangrove' => $mangrove, 'lahan' => $lahan, 'menu' => $this->menu]);
     }
 
     /**
@@ -39,9 +48,10 @@ class PenanamanController extends Controller
      */
     public function create()
     {
+        $this->menu += ['linkS' => '', 'linkSname' => 'Tambah Data'];
         $mangrove = mangrove::all();
         $lahan = lahan::all();
-        return view('penanaman/penanaman/form', ['mangrove' => $mangrove, 'lahan' => $lahan]);
+        return view('penanaman/penanaman/form', ['mangrove' => $mangrove, 'lahan' => $lahan, 'menu' => $this->menu]);
     }
 
     /**
@@ -80,7 +90,7 @@ class PenanamanController extends Controller
         $file = $request->file('foto');
         $file_name = time() . '_' . $file->getClientOriginalName();
         $path = 'image/penanaman';
-        $file->move($path, $file->getClientOriginalName());
+        $file->move($path, $file_name);
 
         $data = array(
             'idmangrove' => $request->idmangrove,
@@ -120,10 +130,11 @@ class PenanamanController extends Controller
      */
     public function edit($id)
     {
+        $this->menu += ['linkC' => '', 'linkCname' => 'Ubah Data'];
         $mangrove = mangrove::all();
         $lahan = lahan::all();
         $data = penanaman::where('idtanam', $id)->first();
-        return view('penanaman/penanaman/form', ['data' => $data, 'mangrove' => $mangrove, 'lahan' => $lahan]);
+        return view('penanaman/penanaman/form', ['data' => $data, 'mangrove' => $mangrove, 'lahan' => $lahan, 'menu' => $this->menu]);
     }
 
     /**
@@ -170,7 +181,7 @@ class PenanamanController extends Controller
                 Alert::error('Terjadi Kesalahan', 'File Tidak Ada Pada Sistem');
                 return redirect()->back();
             }
-            $file->move($path, $file->getClientOriginalName());
+            $file->move($path, $file_name);
             $data = array(
                 'idmangrove' => $request->idmangrove,
                 'idlahan' => $request->idlahan,
@@ -221,5 +232,22 @@ class PenanamanController extends Controller
         }
         Alert::error('Terjadi Kesalahan', 'File Tidak Ada Pada Sistem');
         return redirect()->back();
+    }
+
+    public function monitoringlist()
+    {
+        $mangrove = mangrove::all();
+        $lahan = lahan::all();
+        $data = penanaman::join('mangrove', 'mangrove.idmangrove', '=', 'penanaman_mangrove.idmangrove')
+            ->join('lahan', 'lahan.idlahan', '=', 'penanaman_mangrove.idlahan')
+            ->get(['penanaman_mangrove.*', 'mangrove.mangroveindo', 'lahan.namalahan']);
+        return view('monitoring/monitoringlist', ['data' => $data, 'mangrove' => $mangrove, 'lahan' => $lahan, 'menu' => $this->menu]);
+    }
+
+    public function detail($id)
+    {
+        Session::forget('idtanam');
+        Session::put('idtanam', $id);
+        return redirect('monitoring');
     }
 }

@@ -7,9 +7,28 @@ use App\Models\DesaModel as desa;
 use App\Models\KecamatanModel as kecamatan;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class LahanController extends Controller
 {
+    protected $menu;
+    protected $iddes;
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware(function ($request, $next) {
+            if (Session::get("iddes") == true) {
+                $this->iddes = Session::get("idkec");
+            }
+            $this->menu = array(
+                'linkF' => '/wilayah',
+                'linkFname' => 'Wilayah',
+                'linkS' => '/Lahan',
+                'linkSname' => 'Lahan'
+            );
+            return $next($request);
+        });
+    }
     /**
      * Display a listing of the resource.
      *
@@ -17,12 +36,20 @@ class LahanController extends Controller
      */
     public function index()
     {
+        $text = app('router')->getRoutes()->match(app('request')->create(url()->previous()))->getName();
         $kecamatan = kecamatan::all();
         $desa = desa::all();
+        if ($text == 'wilayah') {
+            $data = lahan::join('desa', 'desa.iddes', '=', 'lahan.iddesa')
+                ->join('kecamatan', 'kecamatan.idkec', '=', 'desa.idkec')
+                ->get(['lahan.*', 'desa.namadesa', 'kecamatan.namakec']);
+            return view('wilayah/desa/desa', ['data' => $data, 'kecamatan' => $kecamatan, 'menu' => $this->menu]);
+        }
         $data = lahan::join('desa', 'desa.iddes', '=', 'lahan.iddesa')
             ->join('kecamatan', 'kecamatan.idkec', '=', 'desa.idkec')
+            ->where('lahan.iddesa', $this->iddes)
             ->get(['lahan.*', 'desa.namadesa', 'kecamatan.namakec']);
-        return view('wilayah/lahan/lahan', ['data' => $data, 'desa' => $desa, 'kecamatan' => $kecamatan]);
+        return view('wilayah/lahan/lahan', ['data' => $data, 'desa' => $desa, 'kecamatan' => $kecamatan, 'menu' => $this->menu]);
     }
 
     /**
@@ -34,7 +61,8 @@ class LahanController extends Controller
     {
         $kecamatan = kecamatan::all();
         $desa = desa::all();
-        return view('wilayah/lahan/form', ['kecamatan' => $kecamatan, 'desa' => $desa]);
+        $this->menu += ['linkC' => '', 'linkCname' => 'Tambah Data'];
+        return view('wilayah/lahan/form', ['kecamatan' => $kecamatan, 'desa' => $desa, 'menu' => $this->menu]);
     }
 
     /**
@@ -105,12 +133,13 @@ class LahanController extends Controller
      */
     public function edit($id)
     {
+        $this->menu += ['linkC' => '', 'linkCname' => 'Ubah Data'];
         $data = lahan::join('desa', 'desa.iddes', '=', 'lahan.iddesa')
             ->where('lahan.idlahan', $id)
             ->get(['lahan.*', 'desa.idkec'])->first();
         $kecamatan = kecamatan::all();
         $desa = desa::all();
-        return view('wilayah/lahan/form', ['data' => $data, 'kecamatan' => $kecamatan, 'desa' => $desa]);
+        return view('wilayah/lahan/form', ['data' => $data, 'kecamatan' => $kecamatan, 'desa' => $desa, 'menu' => $this->menu]);
     }
 
     /**

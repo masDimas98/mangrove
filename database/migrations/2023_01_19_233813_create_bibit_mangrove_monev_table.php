@@ -16,7 +16,7 @@ class CreateBibitMangroveMonevTable extends Migration
         Schema::create('bibit_mangrove_monev', function (Blueprint $table) {
             $table->id('idmonevbibit')->autoIncrement();
             $table->foreignId('idbibit');
-            $table->dateTime('tglmonev');
+            $table->date('tglmonev');
             $table->integer('tinggibibit');
             $table->integer('jml_daun');
             $table->dateTime('dataakses')->useCurrent()->useCurrentOnUpdate();

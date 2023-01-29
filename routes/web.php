@@ -14,9 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/beranda', 'HomeController@beranda')->name('beranda');
+Route::get('/galeri', 'HomeController@galeri')->name('galeri');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -24,33 +23,36 @@ Route::get('/dashboard', function () {
 
 
 Route::resource('kecamatan', 'KecamatanController');
+Route::get('/kecamatan/{id}/detail', 'KecamatanController@detail')->name('detailkec');
 
 Route::resource('desa', 'DesaController');
+Route::get('/desa/{id}/detail', 'DesaController@detail')->name('detaildes');
 
 Route::resource('lahan', 'LahanController');
 
 Route::resource('user', 'UserController');
 
-Route::get('/wilayah', function () {
-    return view('wilayah/wilayah');
-})->middleware(['auth'])->name('wilayah');
+Route::get('/wilayah', 'KecamatanController@will')->name('wilayah');
 
 Route::resource('jenismangrove', 'JenisMangroveController');
 
 Route::resource('mangrove', 'MangroveController');
+Route::get('/mangrove/filter', 'MangroveController@filter');
 
 Route::resource('penanaman', 'PenanamanController');
 
 Route::resource('bibit', 'BibitMangroveController');
-Route::get('/bibit/{id}/detail', 'BibitMangroveController@detail')->name('monev');
+Route::get('/bibit/{id}/detail', 'BibitMangroveController@detail')->name('monevb');
 
-Route::get('/monitoring', function () {
-    return view('monitoring/monitoring');
-})->middleware(['auth'])->name('monitoring');
+Route::resource('bibitmonev', 'BibitMangroveMonevController');
 
-Route::get('/monitoringdetail', function () {
-    return view('monitoring/monitoringdetail');
-})->middleware(['auth'])->name('monitoringdetail');
+Route::resource('monitoring', 'MonitoringMangroveController');
+Route::get('/monitoringlist', 'PenanamanController@monitoringlist')->name('monitoringlist');
+Route::get('/penanaman/{id}/detail', 'PenanamanController@detail')->name('monitoringdetail');
+
+// Route::get('/monitoringdetail', function () {
+//     return view('monitoring/monitoringdetail');
+// })->middleware(['auth'])->name('monitoringdetail');
 
 Route::get('/detailtanaman', function () {
     return view('penanaman/detailtanaman');

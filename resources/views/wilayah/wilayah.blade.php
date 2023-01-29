@@ -1,7 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Wilayah') }}
+            {{-- {{ __('Wilayah') }} --}}
+            @include('components/breadscrumbs')
         </h2>
     </x-slot>
 
@@ -17,11 +18,12 @@
                                     <div class="font-bold text-xl mb-2">
                                         <a href="/kecamatan">kecamatan</a>
                                     </div>
-                                    <p class="text-gray-700 text-base">3</p>
+                                    <p class="text-gray-700 text-base">{{ $kecamatan }}</p>
                                 </div>
                                 <div class="px-6 pt-4 pb-9">
                                     <div class="float-right m-0">
-                                        <a href="/kecamatan" class="bg-blue-500 hover:bg-blue-700 text-white font-bold mb-3 py-2 px-4 rounded-full">detail</a>
+                                        <a href="/kecamatan"
+                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold mb-3 py-2 px-4 rounded-full">detail</a>
 
                                     </div>
                                 </div>
@@ -34,11 +36,12 @@
                                     <div class="font-bold text-xl mb-2">
                                         <a href="/desa">desa</a>
                                     </div>
-                                    <p class="text-gray-700 text-base">10</p>
+                                    <p class="text-gray-700 text-base">{{ $desa }}</p>
                                 </div>
                                 <div class="px-6 pt-4 pb-9">
                                     <div class="float-right m-0">
-                                        <a href="/desa" class="bg-blue-500 hover:bg-blue-700 text-white font-bold mb-3 py-2 px-4 rounded-full">detail</a>
+                                        <a href="/desa"
+                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold mb-3 py-2 px-4 rounded-full">detail</a>
 
                                     </div>
                                 </div>
@@ -51,11 +54,12 @@
                                     <div class="font-bold text-xl mb-2">
                                         <a href="/lahan">lahan</a>
                                     </div>
-                                    <p class="text-gray-700 text-base">50</p>
+                                    <p class="text-gray-700 text-base">{{ $lahan }}</p>
                                 </div>
                                 <div class="px-6 pt-4 pb-9">
                                     <div class="float-right m-0">
-                                        <a href="/lahan" class="bg-blue-500 hover:bg-blue-700 text-white font-bold mb-3 py-2 px-4 rounded-full">Detail</a>
+                                        <a href="/lahan"
+                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold mb-3 py-2 px-4 rounded-full">Detail</a>
                                     </div>
                                 </div>
                             </div>

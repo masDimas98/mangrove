@@ -5,13 +5,29 @@ namespace App\Http\Controllers;
 use App\Models\DesaModel as desa;
 use App\Models\KecamatanModel as kecamatan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Redirect;
 
 class DesaController extends Controller
 {
+    protected $menu;
+    protected $idkec;
 
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware(function ($request, $next) {
+            if (Session::get("idkec") == true) {
+                $this->idkec = Session::get("idkec");
+            }
+            $this->menu = array(
+                'linkF' => '/wilayah',
+                'linkFname' => 'Wilayah',
+                'linkS' => '/desa',
+                'linkSname' => 'Desa'
+            );
+            return $next($request);
+        });
     }
 
     /**
@@ -21,10 +37,16 @@ class DesaController extends Controller
      */
     public function index()
     {
+        $text = app('router')->getRoutes()->match(app('request')->create(url()->previous()))->getName();
         $kecamatan = kecamatan::all();
-        $data = desa::join('kecamatan', 'kecamatan.idkec', '=', 'desa.idkec')
+        if ($text == 'wilayah') {
+            $data = desa::join('kecamatan', 'kecamatan.idkec', '=', 'desa.idkec')
+                ->get(['desa.*', 'kecamatan.namakec']);
+            return view('wilayah/desa/desa', ['data' => $data, 'kecamatan' => $kecamatan, 'menu' => $this->menu]);
+        }
+        $data = desa::join('kecamatan', 'kecamatan.idkec', '=', 'desa.idkec')->where('desa.idkec', $this->idkec)
             ->get(['desa.*', 'kecamatan.namakec']);
-        return view('wilayah/desa/desa', ['data' => $data, 'kecamatan' => $kecamatan]);
+        return view('wilayah/desa/desa', ['data' => $data, 'kecamatan' => $kecamatan, 'menu' => $this->menu, 'filter' => $this->idkec]);
     }
 
     /**
@@ -35,7 +57,8 @@ class DesaController extends Controller
     public function create()
     {
         $kecamatan = kecamatan::all();
-        return view('wilayah/desa/form', ['kecamatan' => $kecamatan]);
+        $this->menu += ['linkC' => '', 'linkCname' => 'Tambah Data'];
+        return view('wilayah/desa/form', ['kecamatan' => $kecamatan, 'menu' => $this->menu]);
     }
 
     /**
@@ -73,10 +96,14 @@ class DesaController extends Controller
     public function show($id)
     {
         $kecamatan = kecamatan::all();
-        $data = desa::join('kecamatan', 'kecamatan.idkec', '=', 'desa.idkec')
-            ->where('desa.idkec', $id)
-            ->get(['desa.*', 'kecamatan.namakec']);
-        return view('wilayah/desa/desa', ['data' => $data, 'kecamatan' => $kecamatan, 'filter' => $id]);
+        if ($id == '0') {
+            $data = desa::join('kecamatan', 'kecamatan.idkec', '=', 'desa.idkec')->get(['desa.*', 'kecamatan.namakec']);
+        } else {
+            $data = desa::join('kecamatan', 'kecamatan.idkec', '=', 'desa.idkec')
+                ->where('desa.idkec', $id)
+                ->get(['desa.*', 'kecamatan.namakec']);
+        }
+        return view('wilayah/desa/desa', ['data' => $data, 'kecamatan' => $kecamatan, 'filter' => $id, 'menu' => $this->menu]);
     }
 
     /**
@@ -89,7 +116,8 @@ class DesaController extends Controller
     {
         $data = desa::where('iddes', $id)->first();
         $kecamatan = kecamatan::all();
-        return view('wilayah/desa/form', ['data' => $data, 'kecamatan' => $kecamatan]);
+        $this->menu += ['linkC' => '', 'linkCname' => 'Ubah Data'];
+        return view('wilayah/desa/form', ['data' => $data, 'kecamatan' => $kecamatan, 'menu' => $this->menu]);
     }
 
     /**
@@ -130,5 +158,12 @@ class DesaController extends Controller
         $data = desa::where('iddes', $id)->delete();
 
         return redirect('desa');
+    }
+
+    public function detail($id)
+    {
+        Session::forget('iddes');
+        Session::put('iddes', $id);
+        return redirect('lahan');
     }
 }

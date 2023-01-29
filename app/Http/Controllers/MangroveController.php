@@ -9,6 +9,18 @@ use Illuminate\Http\Request;
 
 class MangroveController extends Controller
 {
+    protected $menu;
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware(function ($request, $next) {
+            $this->menu = array(
+                'linkF' => '/mangrove',
+                'linkFname' => 'Mangrove',
+            );
+            return $next($request);
+        });
+    }
     /**
      * Display a listing of the resource.
      *
@@ -17,8 +29,8 @@ class MangroveController extends Controller
     public function index()
     {
         $jenis = jenismangrove::all();
-        $data = mangrove::all();
-        return view('mangrove/mangrove/mangrove', ['data' => $data, 'jenismangrove' => $jenis]);
+        $data = mangrove::join('jenis_mangrove', 'jenis_mangrove.idjenis', '=', 'mangrove.idjenis')->get(['mangrove.*', 'jenis_mangrove.namajenislatin', 'jenis_mangrove.namajenisindo']);
+        return view('mangrove/mangrove/mangrove', ['data' => $data, 'jenismangrove' => $jenis, 'menu' => $this->menu]);
     }
 
     /**
@@ -28,8 +40,9 @@ class MangroveController extends Controller
      */
     public function create()
     {
+        $this->menu += ['linkC' => '', 'linkCname' => 'Ubah Data'];;
         $jenis = jenismangrove::all();
-        return view('mangrove/mangrove/form', ['jenismangrove' => $jenis]);
+        return view('mangrove/mangrove/form', ['jenismangrove' => $jenis, 'menu' => $this->menu]);
     }
 
     /**
@@ -72,8 +85,12 @@ class MangroveController extends Controller
     public function show($id)
     {
         $jenis = jenismangrove::all();
-        $data = mangrove::where('idjenis', $id)->get(['mangrove.*']);
-        return view('mangrove/mangrove/mangrove', ['data' => $data, 'jenismangrove' => $jenis, 'filter' => $id]);
+        if ($id == '0') {
+            $data = mangrove::join('jenis_mangrove', 'jenis_mangrove.idjenis', '=', 'mangrove.idjenis')->get(['mangrove.*', 'jenis_mangrove.namajenislatin', 'jenis_mangrove.namajenisindo']);
+        } else {
+            $data = mangrove::join('jenis_mangrove', 'jenis_mangrove.idjenis', '=', 'mangrove.idjenis')->where('mangrove.idjenis', $id)->get(['mangrove.*', 'jenis_mangrove.namajenislatin', 'jenis_mangrove.namajenisindo']);
+        }
+        return view('mangrove/mangrove/mangrove', ['data' => $data, 'jenismangrove' => $jenis, 'filter' => $id, 'menu' => $this->menu]);
     }
 
     /**
@@ -84,9 +101,10 @@ class MangroveController extends Controller
      */
     public function edit($id)
     {
+        $this->menu += ['linkC' => '', 'linkCname' => 'Ubah Data'];;
         $jenis = jenismangrove::all();
         $data = mangrove::where('idmangrove', $id)->first();
-        return view('mangrove/mangrove/form', ['data' => $data, 'jenismangrove' => $jenis]);
+        return view('mangrove/mangrove/form', ['data' => $data, 'jenismangrove' => $jenis, 'menu' => $this->menu]);
     }
 
     /**

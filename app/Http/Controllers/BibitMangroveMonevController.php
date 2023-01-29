@@ -7,9 +7,32 @@ use App\Models\BibitMangroveMonevModel as BibitMonev;
 use App\Models\BibitMangroveModel as Bibit;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Redirect;
 
 class BibitMangroveMonevController extends Controller
 {
+    protected $idbibit;
+    protected $menu;
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+
+        $this->middleware(function ($request, $next) {
+            if (Session::get("idbibit") == false) {
+                Redirect::to('bibit')->send();
+            }
+            $this->idbibit = Session::get('idbibit');
+            $this->menu = array(
+                'linkF' => '/bibit',
+                'linkFname' => 'Bibit',
+                'linkS' => '/bibitmonev',
+                'linkSname' => 'Bibit Monev'
+            );
+            return $next($request);
+        });
+    }
     /**
      * Display a listing of the resource.
      *
@@ -17,10 +40,10 @@ class BibitMangroveMonevController extends Controller
      */
     public function index()
     {
-        $bibit = Bibit::all();
-        $data = BibitMonev::all();
+        $bibit = Bibit::join('mangrove', 'mangrove.idmangrove', '=', 'bibit_mangrove.idmangrove')->where('idbibit', $this->idbibit)->get(['bibit_mangrove.*', 'mangrove.mangroveindo', 'mangrove.mangrovelatin'])->first();
+        $data = Bibitmonev::where('idbibit', $this->idbibit)->get();
 
-        return view('bibit/bibitmonev/bibitmonev', ['data' => $data, 'bibit' => $bibit]);
+        return view('bibit/bibitmonev/bibitmonev', ['data' => $data, 'bibit' => $bibit, 'menu' => $this->menu]);
     }
 
     /**
@@ -30,9 +53,8 @@ class BibitMangroveMonevController extends Controller
      */
     public function create()
     {
-        $bibit = Bibit::all();
-
-        return view('bibit/bibitmonev/form', ['bibit' => $bibit]);
+        $this->menu += ['linkC' => '', 'linkCname' => 'Tambah Data'];
+        return view('bibit/bibitmonev/form', ['menu' => $this->menu]);
     }
 
     /**
@@ -43,44 +65,45 @@ class BibitMangroveMonevController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
-            'idbibit' => 'required|exists:App\Models\BibitMangroveModel, idbibit',
-            'tglmonev' => 'required|date',
-            'tinggibibit' => 'required|integer',
-            'jml_daun' => 'required|integer',
-            'foto' => 'file|image|mimes:jpeg,png,jpg|max:100'
+            'tanggal' => 'required|date',
+            'tinggi' => 'required|integer',
+            'jumlah' => 'required|integer',
+            // 'foto' => 'required|file|image|mimes:jpeg,png,jpg|max:100'
+            'foto' => 'required|file|image|mimes:jpeg,png,jpg'
         ], [
-            'idbibit.required' => 'Harus Diisi.',
-            'idbibit.exists' => 'Bibit Tidak Terdaftar.',
-            'tglmonev.required' => 'Harus Diisi.',
-            'tglmonev.date' => 'Isi Dengan Tanggal',
-            'tinggibibit.required' => 'Harus Diisi.',
-            'tinggibibit.integer' => 'Harus Diisi Dengan Angka.',
-            'jml_daun.required' => 'Harus Diisi.',
-            'jml_daun.integer' => 'Harus Diisi Dengan Angka.',
+            'tanggal.required' => 'Harus Diisi.',
+            'tanggal.date' => 'Isi Dengan Tanggal',
+            'tinggi.required' => 'Harus Diisi.',
+            'tinggi.integer' => 'Harus Diisi Dengan Angka.',
+            'jumlah.required' => 'Harus Diisi.',
+            'jumlah.integer' => 'Harus Diisi Dengan Angka.',
+            'foto.required' => 'Harus Diisi.',
             'foto.image' => 'File harus Berbentuk Image.',
             'foto.mimes' => 'Bentuk File Harus JPEG, PNG, JPG',
-            'foto.max' => 'besar file maksimal 100kb.'
+            // 'foto.max' => 'besar file maksimal 100kb.'
         ]);
+
+        // dd($data);
 
         $file = $request->file('foto');
         $file_name = time() . '_' . $file->getClientOriginalName();
         $path = 'image/bibitmangrovemonev';
         $file->move($path, $file_name);
-
         $data = array(
-            'idbibit' => $request->idbibit,
-            'tglmonev' => $request->tglmonev,
-            'tinggibibit' => $request->tinggibibit,
-            'jml_daun' => $request->jml_daun,
+            'idbibit' => $this->idbibit,
+            'tglmonev' => $request->tanggal,
+            'tinggibibit' => $request->tinggi,
+            'jml_daun' => $request->jumlah,
             'userid' => auth()->user()->id,
             'foto' => $file_name
         );
 
         try {
-            Bibit::create($data);
+            BibitMonev::create($data);
             Alert::success('Sukses', 'Menyimpan Data Baru');
-            return redirect('bibit');
+            return redirect('bibitmonev');
         } catch (\Throwable $th) {
             Alert::success('Error', 'Terjadi Kesalahan Saat Menyimpan Data');
         }
@@ -105,10 +128,10 @@ class BibitMangroveMonevController extends Controller
      */
     public function edit($id)
     {
-        $bibit = Bibit::all();
+        $this->menu += ['linkC' => '', 'linkCname' => 'Ubah Data'];
         $data = BibitMonev::where('idmonevbibit', $id)->first();
 
-        return view('bibit/bibitmonev/form', ['data' => $data, 'bibit' => $bibit]);
+        return view('bibit/bibitmonev/form', ['data' => $data, 'menu' => $this->menu]);
     }
 
     /**
@@ -121,23 +144,21 @@ class BibitMangroveMonevController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'idbibit' => 'required|exists:App\Models\BibitMangroveModel, idbibit',
-            'tglmonev' => 'required|date',
-            'tinggibibit' => 'required|integer',
-            'jml_daun' => 'required|integer',
-            'foto' => 'file|image|mimes:jpeg,png,jpg|max:100'
+            'tanggal' => 'required|date',
+            'tinggi' => 'required|integer',
+            'jumlah' => 'required|integer',
+            // 'foto' => 'required|file|image|mimes:jpeg,png,jpg|max:100'
+            'foto' => 'file|image|mimes:jpeg,png,jpg'
         ], [
-            'idbibit.required' => 'Harus Diisi.',
-            'idbibit.exists' => 'Bibit Tidak Terdaftar.',
-            'tglmonev.required' => 'Harus Diisi.',
-            'tglmonev.date' => 'Isi Dengan Tanggal',
-            'tinggibibit.required' => 'Harus Diisi.',
-            'tinggibibit.integer' => 'Harus Diisi Dengan Angka.',
-            'jml_daun.required' => 'Harus Diisi.',
-            'jml_daun.integer' => 'Harus Diisi Dengan Angka.',
+            'tanggal.required' => 'Harus Diisi.',
+            'tanggal.date' => 'Isi Dengan Tanggal',
+            'tinggi.required' => 'Harus Diisi.',
+            'tinggi.integer' => 'Harus Diisi Dengan Angka.',
+            'jumlah.required' => 'Harus Diisi.',
+            'jumlah.integer' => 'Harus Diisi Dengan Angka.',
             'foto.image' => 'File harus Berbentuk Image.',
             'foto.mimes' => 'Bentuk File Harus JPEG, PNG, JPG',
-            'foto.max' => 'besar file maksimal 100kb.'
+            // 'foto.max' => 'besar file maksimal 100kb.'
         ]);
 
         $old = BibitMonev::where('idmonevbibit', $id)->first();
@@ -154,19 +175,19 @@ class BibitMangroveMonevController extends Controller
             }
             $file->move($path, $file->getClientOriginalName());
             $data = array(
-                'idbibit' => $request->idbibit,
-                'tglmonev' => $request->tglmonev,
-                'tinggibibit' => $request->tinggibibit,
-                'jml_daun' => $request->jml_daun,
+                'idbibit' => $this->idbibit,
+                'tglmonev' => $request->tanggal,
+                'tinggibibit' => $request->tinggi,
+                'jml_daun' => $request->jumlah,
                 'userid' => auth()->user()->id,
                 'foto' => $file_name
             );
         } else {
             $data = array(
-                'idbibit' => $request->idbibit,
-                'tglmonev' => $request->tglmonev,
-                'tinggibibit' => $request->tinggibibit,
-                'jml_daun' => $request->jml_daun,
+                'idbibit' => $this->idbibit,
+                'tglmonev' => $request->tanggal,
+                'tinggibibit' => $request->tinggi,
+                'jml_daun' => $request->jumlah,
                 'userid' => auth()->user()->id,
             );
         }
@@ -191,11 +212,11 @@ class BibitMangroveMonevController extends Controller
      */
     public function destroy($id)
     {
-        $old = Bibit::where('idmonevbibit', $id)->first();
+        $old = BibitMonev::where('idmonevbibit', $id)->first();
 
         if (File::exists(public_path('image/bibitmangrovemonev/' . $old->foto))) {
             File::delete(public_path('image/bibitmangrovemonev/' . $old->foto));
-            $old = Bibit::where('idmonevbibit', $id)->delete();
+            $old = BibitMonev::where('idmonevbibit', $id)->delete();
 
             Alert::success('Sukses', 'Menghapus Data');
             return redirect('bibitmonev');

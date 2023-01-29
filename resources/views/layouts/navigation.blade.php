@@ -39,6 +39,8 @@
                             {{ __('Wilayah') }}
                         </x-nav-link>
                     @endif
+                @endif
+                @if (auth()->user()->hakakses == 1 || auth()->user()->hakakses == 2 || auth()->user()->hakakses == 3)
                     @if (request()->is('penanaman') || request()->is('penanaman/*'))
                         <x-nav-link :href="url('/penanaman')" :active="1">
                             {{ __('Penanaman') }}
@@ -48,6 +50,8 @@
                             {{ __('Penanaman') }}
                         </x-nav-link>
                     @endif
+                @endif
+                @if (auth()->user()->hakakses == 1 || auth()->user()->hakakses == 2)
                     @if (request()->is('jenismangrove') ||
                             request()->is('jenismangrove/*') ||
                             request()->is('mangrove') ||
@@ -60,6 +64,9 @@
                             {{ __('Mangrove') }}
                         </x-nav-link>
                     @endif
+                @endif
+
+                @if (auth()->user()->hakakses == 1)
                     @if (request()->is('user') || request()->is('user/*'))
                         <x-nav-link :href="url('/user')" :active="1">
                             {{ __('Users') }}
@@ -69,20 +76,19 @@
                             {{ __('Users') }}
                         </x-nav-link>
                     @endif
-
                 @endif
 
                 @if (auth()->user()->hakakses == 1 || auth()->user()->hakakses == 3)
-                    @if (request()->routeIs('monitoring') || request()->routeIs('monitoringdetail'))
-                        <x-nav-link :href="route('monitoring')" :active="1">
+                    @if (request()->is('monitoring') || request()->is('monitoringlist') || request()->is('monitoring/*'))
+                        <x-nav-link :href="url('/monitoringlist')" :active="1">
                             {{ __('Monitoring Mangrove') }}
                         </x-nav-link>
                     @else
-                        <x-nav-link :href="route('monitoring')" :active="0">
+                        <x-nav-link :href="url('/monitoringlist')" :active="0">
                             {{ __('Monitoring Mangrove') }}
                         </x-nav-link>
                     @endif
-                    @if (request()->is('bibit') || request()->is('bibit/*'))
+                    @if (request()->is('bibit') || request()->is('bibit/*') || request()->is('bibitmonev') || request()->is('bibitmonev/*'))
                         <x-nav-link :href="url('/bibit')" :active="1">
                             {{ __('bibit Mangrove') }}
                         </x-nav-link>

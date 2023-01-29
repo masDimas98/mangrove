@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Users') }}
+            @include('components/breadscrumbs')
         </h2>
     </x-slot>
 
@@ -79,15 +79,15 @@
                                                         height="20px">
                                                 </a>
 
-                                                <button class="inline-flex">
+                                                <button class="inline-flex pr-5">
                                                     <img src="{{ url('icon/delete.png') }}" alt=""
                                                         width="20px" height="20px">
                                                 </button>
 
-                                                <a href="{{ route('bibit.detail', $item->idbibit) }}"
+                                                <a href="{{ route('monevb', $item->idbibit) }}"
                                                     class="inline-flex pr-5">
-                                                    <img src="{{ url('icon/edit.png') }}" alt="" width="20px"
-                                                        height="20px">
+                                                    <img src="{{ url('icon/detail.png') }}" alt=""
+                                                        width="20px" height="20px">
                                                 </a>
                                             </div>
                                             @csrf

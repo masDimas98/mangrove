@@ -12,9 +12,17 @@ use RealRashid\SweetAlert\Facades\Alert;
 class UserController extends Controller
 {
 
+    protected $menu;
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware(function ($request, $next) {
+            $this->menu = array(
+                'linkF' => '/user',
+                'linkFname' => 'Users',
+            );
+            return $next($request);
+        });
     }
 
     /**
@@ -25,8 +33,7 @@ class UserController extends Controller
     public function index()
     {
         $data = User::where('hakakses', '!=', 1)->get();
-        // dd($data);
-        return view('user/user', ['data' => $data]);
+        return view('user/user', ['data' => $data, 'menu' => $this->menu]);
     }
 
     /**
@@ -36,7 +43,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('user/form');
+        $this->menu += ['linkC' => '', 'linkCname' => 'Ubah Data'];
+        return view('user/form', ['menu' => $this->menu]);
     }
 
     /**
@@ -88,9 +96,10 @@ class UserController extends Controller
      */
     public function edit($id)
     {
+        $this->menu += ['linkC' => '', 'linkCname' => 'Ubah Data'];
         $data = User::where('id', $id)->first();
 
-        return view('user/form', ['data' => $data]);
+        return view('user/form', ['data' => $data, 'menu' => $this->menu]);
     }
 
     /**

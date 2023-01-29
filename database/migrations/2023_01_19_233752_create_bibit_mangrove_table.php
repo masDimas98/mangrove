@@ -16,7 +16,7 @@ class CreateBibitMangroveTable extends Migration
         Schema::create('bibit_mangrove', function (Blueprint $table) {
             $table->id('idbibit')->autoIncrement();
             $table->foreignId('idmangrove');
-            $table->dateTime('tgltanam');
+            $table->date('tgltanam');
             $table->dateTime('dataakses')->useCurrent()->useCurrentOnUpdate();
             $table->foreignId('userid');
             $table->string('foto');

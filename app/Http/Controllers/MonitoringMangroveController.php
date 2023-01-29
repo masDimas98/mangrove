@@ -3,27 +3,37 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\BibitMangroveModel as Bibit;
-use App\Models\BibitMangroveMonevModel as Bibitmonev;
-use App\Models\MangroveModel as Mangrove;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Redirect;
+use App\Models\MonitoringMangroveModel as Monitoring;
+use App\Models\PenanamanModel as Penanaman;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\File;
 
-class BibitMangroveController extends Controller
+class MonitoringMangroveController extends Controller
 {
+    protected $idtanam;
     protected $menu;
+
     public function __construct()
     {
         $this->middleware('auth');
+
         $this->middleware(function ($request, $next) {
+            if (Session::get("idtanam") == false) {
+                Redirect::to('monitoringlist')->send();
+            }
+            $this->idtanam = Session::get('idtanam');
             $this->menu = array(
-                'linkF' => '/bibit',
-                'linkFname' => 'Bibit',
+                'linkF' => '/monitoringlist',
+                'linkFname' => 'Monitoring',
+                'linkS' => '/monitoring',
+                'linkSname' => 'Daftar Monitoring dan Evaluasi'
             );
             return $next($request);
         });
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -31,9 +41,10 @@ class BibitMangroveController extends Controller
      */
     public function index()
     {
-        $mangrove = Mangrove::all();
-        $data = Bibit::join('mangrove', 'mangrove.idmangrove', '=', 'bibit_mangrove.idmangrove')->get(['bibit_mangrove.*', 'mangrove.mangroveindo']);
-        return view('bibit/bibit/bibit', ['data' => $data, 'mangrove' => $mangrove, 'menu' => $this->menu]);
+        $penanaman = Penanaman::join('mangrove', 'mangrove.idmangrove', '=', 'penanaman_mangrove.idmangrove')->where('idtanam', $this->idtanam)->get(['penanaman_mangrove.*', 'mangrove.mangrovelatin', 'mangrove.mangroveindo'])->first();
+        $data = Monitoring::where('idtanam', $this->idtanam)->get();
+        // dd($penanaman);
+        return view('monitoring/monitoring/monitoring', ['penanaman' => $penanaman, 'data' => $data,  'menu' => $this->menu]);
     }
 
     /**
@@ -44,8 +55,7 @@ class BibitMangroveController extends Controller
     public function create()
     {
         $this->menu += ['linkC' => '', 'linkCname' => 'Tambah Data'];
-        $mangrove = Mangrove::all();
-        return view('bibit/bibit/form', ['mangrove' => $mangrove, 'menu' => $this->menu]);
+        return view('monitoring/monitoring/form', ['menu' => $this->menu]);
     }
 
     /**
@@ -57,39 +67,44 @@ class BibitMangroveController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'idmangrove' => 'required|exists:App\Models\MangroveModel,idmangrove',
-            'tgltanam' => 'required|date',
-            // 'foto' => 'file|image|mimes:jpeg,png,jpg|max:100'
+            'tglmonev' => 'required|date',
+            'jmlmati' => 'required|integer',
+            'jmlhidup' => 'required|integer',
+            // 'foto' => 'required|file|image|mimes:jpeg,png,jpg|max:100'
             'foto' => 'required|file|image|mimes:jpeg,png,jpg'
         ], [
-            'idmangrove.required' => 'Harus Diisi.',
-            'tgltanam.required' => 'Harus Diisi.',
-            'tgltanam.date' => 'Isi Dengan Tanggal',
+            'tglmonev.required' => 'Harus Diisi.',
+            'tglmonev.data' => 'Harus Diisi dengan tanggal',
+            'jmlmati.required' => 'Harus Diisi.',
+            'jmlmati.integer' => 'Harap Masukan Angka',
+            'jmlhidup.required' => 'Harus Diisi.',
+            'jmlhidup.integer' => 'Harap Masukan Angka',
             'foto.required' => 'Harus Diisi.',
             'foto.image' => 'File harus Berbentuk Image.',
             'foto.mimes' => 'Bentuk File Harus JPEG, PNG, JPG',
             // 'foto.max' => 'besar file maksimal 100kb.'
         ]);
 
-
         $file = $request->file('foto');
         $file_name = time() . '_' . $file->getClientOriginalName();
-        $path = 'image/bibitmangrove';
+        $path = 'image/penanamanmonev';
         $file->move($path, $file_name);
 
         $data = array(
-            'idmangrove' => $request->idmangrove,
-            'tgltanam' => $request->tgltanam,
+            'idtanam' => $this->idtanam,
+            'tglmonev' => $request->tglmonev,
+            'jml_mati' => $request->jmlmati,
+            'jml_hidup' => $request->jmlhidup,
             'userid' => auth()->user()->id,
             'foto' => $file_name,
         );
 
         try {
-            Bibit::create($data);
+            Monitoring::create($data);
 
             Alert::success('Sukses', 'Menyimpan Data Baru');
 
-            return redirect('bibit');
+            return redirect('monitoring');
         } catch (\Throwable $th) {
             Alert::success('Error', 'Terjadi Kesalahan Saat Menyimpan Data');
         }
@@ -114,10 +129,9 @@ class BibitMangroveController extends Controller
      */
     public function edit($id)
     {
-        $mangrove = Mangrove::all();
-        $data = Bibit::where('idbibit', $id)->first();
-        $this->menu += ['linkCname' => 'Ubah Data'];
-        return view('bibit/bibit/form', ['data' => $data, 'mangrove' => $mangrove, 'menu' => $this->menu]);
+        $this->menu += ['linkC' => '', 'linkCname' => 'Ubah Data'];
+        $data = Monitoring::where('idmonev', $id)->first();
+        return view('monitoring/monitoring/form', ['menu' => $this->menu, 'data' => $data]);
     }
 
     /**
@@ -130,50 +144,59 @@ class BibitMangroveController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'idmangrove' => 'required|exists:App\Models\MangroveModel,idmangrove',
-            'tgltanam' => 'required|date',
+            'tglmonev' => 'required|date',
+            'jml_mati' => 'required|integer',
+            'jml_hidup' => 'required|integer',
             'foto' => 'file|image|mimes:jpeg,png,jpg|max:100'
         ], [
-            'idmangrove.required' => 'Harus Diisi.',
-            'tgltanam.required' => 'Harus Diisi.',
+            'tglmonev.required' => 'Harus Diisi.',
+            'tglmonev.data' => 'Harus Diisi dengan tanggal',
+            'jml_mati.required' => 'Harus Diisi.',
+            'jml_mati.integer' => 'Harap Masukan Angka',
+            'jml_hidup.required' => 'Harus Diisi.',
+            'jml_hidup.integer' => 'Harap Masukan Angka',
             'foto.image' => 'File harus Berbentuk Image.',
             'foto.mimes' => 'Bentuk File Harus JPEG, PNG, JPG',
             'foto.max' => 'besar file maksimal 100kb.'
         ]);
 
-        $old = Bibit::where('idbibit', $id)->first();
+        $old = Monitoring::where('idtanam', $id)->first();
 
         if ($request->foto != '') {
             $file = $request->file('foto');
             $file_name = time() . '_' . $file->getClientOriginalName();
-            $path = 'image/bibitmangrove';
-            if (File::exists(public_path('image/bibitmangrove/' . $old->foto))) {
-                File::delete(public_path('image/bibitmangrove/' . $old->foto));
+            $path = 'image/penanamanmonev';
+            if (File::exists(public_path('image/penanamanmonev/' . $old->foto))) {
+                File::delete(public_path('image/penanamanmonev/' . $old->foto));
             } else {
                 Alert::error('Terjadi Kesalahan', 'File Tidak Ada Pada Sistem');
                 return redirect()->back();
             }
             $file->move($path, $file_name);
             $data = array(
-                'idmangrove' => $request->idmangrove,
+                'idtanam' => $this->idtanam,
                 'tgltanam' => $request->tgltanam,
+                'jml_mati' => $request->jumlahmati,
+                'jml_hidup' => $request->jumlahhidup,
                 'userid' => auth()->user()->id,
                 'foto' => $file_name,
             );
         } else {
             $data = array(
-                'idmangrove' => $request->idmangrove,
+                'idtanam' => $this->idtanam,
                 'tgltanam' => $request->tgltanam,
+                'jml_mati' => $request->jumlahmati,
+                'jml_hidup' => $request->jumlahhidup,
                 'userid' => auth()->user()->id,
             );
         }
 
         try {
-            Bibit::where('idbibit', $id)->update($data);
+            Monitoring::where('idmonev', $id)->update($data);
 
             Alert::success('Sukses', 'Menyimpan Data Baru');
 
-            return redirect('bibit');
+            return redirect('monitoring');
         } catch (\Throwable $th) {
             Alert::success('Error', 'Terjadi Kesalahan Saat Menyimpan Data');
 
@@ -189,29 +212,16 @@ class BibitMangroveController extends Controller
      */
     public function destroy($id)
     {
-        $old = Bibit::where('idbibit', $id)->first();
+        $old = Monitoring::where('idmonev', $id)->first();
 
-        if (File::exists(public_path('image/bibitmangrove/' . $old->foto))) {
-            File::delete(public_path('image/bibitmangrove/' . $old->foto));
-            $old = Bibit::where('idbibit', $id)->delete();
+        if (File::exists(public_path('image/penanamanmonev/' . $old->foto))) {
+            File::delete(public_path('image/penanamanmonev/' . $old->foto));
+            $old = Monitoring::where('idmonev', $id)->delete();
 
             Alert::success('Sukses', 'Menghapus Data');
-            return redirect('bibit');
+            return redirect('monitoring');
         }
         Alert::error('Terjadi Kesalahan', 'File Tidak Ada Pada Sistem');
-        return redirect('bibit');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function detail($id)
-    {
-        Session::forget('idbibit');
-        Session::put('idbibit', $id);
-        return redirect('bibitmonev');
+        return redirect('monitoring');
     }
 }

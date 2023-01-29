@@ -6,22 +6,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
-class BibitMangroveMonevModel extends Model
+class MonitoringMangroveModel extends Model
 {
     use HasFactory;
 
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-    protected $table = 'bibit_mangrove_monev';
-    protected $primaryKey = 'idmonevbibit';
+    protected $table = 'monev_mangrove';
+    protected $primaryKey = 'idmonev';
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['idbibit', 'tglmonev', 'tinggibibit', 'dataakses', 'jml_daun', 'userid', 'foto'];
+    protected $fillable = ['idtanam', 'tglmonev', 'jml_mati', 'jml_hidup', 'dataakses', 'userid', 'foto'];
 
     public function getTglmonevAttribute()
     {

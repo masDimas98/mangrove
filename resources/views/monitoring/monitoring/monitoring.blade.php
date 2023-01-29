@@ -1,51 +1,61 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{-- {{ __('Wilayah') }} / {{ __('Desa') }} --}}
+            {{-- {{ __('Monitoring') }} / {{ __('Daftar Tanaman') }} --}}
             @include('components/breadscrumbs')
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
-                    <div class="mb-2 flex flex-wrap justify-between">
-                        <h2 class="font-semibold text-xl text-gray-800 leading-tight pt-3 w:fit-content">
-                            {{ __('Daftar Kecamatan ') }}
-                        </h2>
-                        <form action="" method="post" id="formSearch" class="flex">
-                            @method('GET')
-                            <label for="kecamatan_select" class="sr-only">Underline select</label>
-                            <select id="kecamatan_select"
-                                class="block py-2.5 px-0 w-32 text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer mr-4 mb-2">
-                                <option value="0" selected>Semua Kecamatan</option>
-                                @foreach ($kecamatan as $item)
-                                    @if (isset($filter))
-                                        @if ($filter == $item->idkec)
-                                            <option value="{{ $item->idkec }}" selected>{{ $item->namakec }}
-                                            </option>
-                                        @else
-                                            <option value="{{ $item->idkec }}">{{ $item->namakec }}</option>
-                                        @endif
-                                    @else
-                                        <option value="{{ $item->idkec }}">{{ $item->namakec }}</option>
-                                    @endif
-                                @endforeach
-
-                            </select>
-                            <button id="btn_search"
-                                class=" items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">Cari
-                            </button>
-                        </form>
+                    <h5 class="font-semibold text-xl text-gray-800 leading-tight pt-3 text-center">
+                        {{ __('Bibit Mangrove') }}
+                    </h5>
+                    <div class="grid grid-rows-6 grid-flow-col gap-4 mb-3">
+                        <div class="col-span-2">
+                            <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Mangrove Indonesia / Latin</dt>
+                            <dd class="text-lg font-semibold">
+                                {{ $penanaman->mangroveindo }} &nbsp;/ &nbsp;{{ $penanaman->mangrovelatin }}
+                            </dd>
+                        </div>
+                        <div class="row-span-1 col-span-2 ...">
+                            <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Tanggal Tanam</dt>
+                            <dd class="text-lg font-semibold">{{ $penanaman->tgltanam }}</dd>
+                        </div>
+                        <div class="row-span-1 col-span-2 ...">
+                            <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Blok Lahan</dt>
+                            <dd class="text-lg font-semibold">{{ $penanaman->blok_lahan }}</dd>
+                        </div>
+                        <div class="row-span-1 col-span-2 ...">
+                            <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Jumlah Tanam</dt>
+                            <dd class="text-lg font-semibold">{{ $penanaman->jmltanam }}</dd>
+                        </div>
+                        <div class="row-span-1 col-span-2 ...">
+                            <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Pihak Tanam</dt>
+                            <dd class="text-lg font-semibold">{{ $penanaman->pihak_tanam }}</dd>
+                        </div>
+                        <div class="row-span-1 col-span-2 ...">
+                            <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Status Tanam</dt>
+                            <dd class="text-lg font-semibold">{{ $penanaman->statustanam }}</dd>
+                        </div>
+                        {{-- <div class="row-span-1 col-span-2 ...">
+                            <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400"></dt>
+                            <dd class="text-lg font-semibold">yourname@flowbite.com</dd>
+                        </div> --}}
+                        <div class="row-span-6 m-auto">
+                            <img src="{{ url('/image/penanaman/' . $penanaman->foto) }}" alt="" srcset=""
+                                width="100" height="100">
+                        </div>
                     </div>
-
                     <hr class="pb-5">
                     <div class="relative overflow-x-auto">
                         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                             <div class="flex items-center justify-between pb-4">
                                 <div>
-                                    <form action="{{ action('DesaController@create') }}">
+                                    <form action="{{ action('MonitoringMangroveController@create') }}">
                                         <button
                                             class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">Tambah
                                         </button>
@@ -71,14 +81,21 @@
                                     class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
                                         <th scope="col" class="px-6 py-3">
-                                            Nama Desa
+                                            Tanggal Monev
                                         </th>
                                         <th scope="col" class="px-6 py-3">
-                                            Nama Kecamatan
+                                            Jumlah Mati
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
+                                            Jumlah Hidup
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
+                                            Foto
                                         </th>
                                         <th scope="col" class="px-6 py-3">
                                             Aksi
                                         </th>
+
                                     </tr>
                                 </thead>
                                 <tbody id="myTable">
@@ -87,33 +104,40 @@
                                             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                             <th scope="row"
                                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ $item->namadesa }}
+                                                {{ $item->tglmonev }}
                                             </th>
-                                            <th scope="row"
-                                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ $item->namakec }}
-                                            </th>
+                                            <td class="px-6 py-4">
+                                                {{ $item->jml_mati }}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                {{ $item->jml_hidup }}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <img src="{{ url('/image/penanamanmonev/' . $item->foto) }}"
+                                                    alt="" srcset="" width="100" height="100">
+                                            </td>
 
                                             <td class="px-6 py-4">
-                                                <form action="{{ route('desa.destroy', $item->iddes) }}" method="post"
-                                                    id="form_delete">
+                                                <form action="{{ route('monitoring.destroy', $item->idmonev) }}"
+                                                    method="post" id="form_delete">
 
                                                     <div class="justify-center">
-                                                        <a href="{{ route('desa.edit', $item->iddes) }}"
+                                                        <a href="{{ route('monitoring.edit', $item->idmonev) }}"
                                                             class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
                                                         |
                                                         <button
                                                             class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                                             Delete
                                                         </button>
-                                                        |
-                                                        <a href="{{ route('detaildes', $item->iddes) }}"
-                                                            class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Detail</a>
                                                     </div>
                                                     @csrf
                                                     @method('DELETE')
                                                 </form>
                                                 {{-- <a href="#"
+                                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a> --}}
+                                            </td>
+                                            </form>
+                                            {{-- <a href="#"
                                                     class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a> --}}
                                             </td>
                                         </tr>
@@ -130,35 +154,3 @@
     <x-slot name="js">
     </x-slot>
 </x-app-layout>
-<script src="vendor/sweetalert/sweetalert.all.js"></script>
-<script type="text/javascript">
-    btn = $('#btn_search');
-    btn.click(function(e) {
-        e.preventDefault();
-        var kec = $('#kecamatan_select').val()
-        $("#formSearch").attr('action', "{{ url('/desa') }}/" + kec);
-        $("#formSearch").submit();
-
-    });
-
-    // function delete() {
-    //     Swal.fire({
-    //         title: 'Are you sure?',
-    //         text: "You won't be able to revert this!",
-    //         icon: 'warning',
-    //         showCancelButton: true,
-    //         confirmButtonColor: '#3085d6',
-    //         cancelButtonColor: '#d33',
-    //         confirmButtonText: 'Yes, delete it!'
-    //     }).then((result) => {
-    //         if (result.isConfirmed) {
-    //             Swal.fire(
-    //                 'Deleted!',
-    //                 'Your file has been deleted.',
-    //                 'success'
-    //             )
-    //             $('#form_delete').submit();
-    //         }
-    //     })
-    // }
-</script>

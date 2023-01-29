@@ -1,7 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Users') }}
+            {{-- {{ __('Users') }} --}}
+            @include('components/breadscrumbs')
         </h2>
     </x-slot>
 
@@ -9,77 +10,74 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
-                    <div class="float-right mb-2">
-                        <form action="{{ action('UserController@create') }}">
-                            <button
-                                class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded float-right mb-2">Tambah
-                            </button>
-                        </form>
+                    <h5 class="font-semibold text-xl text-gray-800 leading-tight pt-3 text-center">
+                        {{ __('Bibit Mangrove') }}
+                    </h5>
+                    <div class="grid grid-rows-2 grid-flow-col gap-4 mb-3">
+                        <div class="col-span-2">
+                            <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Mangrove Indonesia / Latin</dt>
+                            <dd class="text-lg font-semibold">
+                                {{ $bibit->mangroveindo }} &nbsp;/ &nbsp;{{ $bibit->mangrovelatin }}
+                            </dd>
+                        </div>
+                        <div class="row-span-1 col-span-2 ...">
+                            <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Tanggal Tanam</dt>
+                            <dd class="text-lg font-semibold">{{ $bibit->tgltanam }}</dd>
+                        </div>
+                        {{-- <div class="row-span-1 col-span-2 ...">
+                            <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400"></dt>
+                            <dd class="text-lg font-semibold">yourname@flowbite.com</dd>
+                        </div> --}}
+                        <div class="row-span-2 m-auto">
+                            <img src="{{ url('/image/bibitmangrove/' . $bibit->foto) }}" alt="" srcset=""
+                                width="100" height="100">
+                        </div>
                     </div>
+                    <hr>
+                    <div class="grid grid-cols-3 py-3">
+                        <div class="flex"></div>
+                        <div class="">
+                            <h2 class="font-semibold text-xl text-gray-800 leading-tight pt-3 text-center">
+                                {{ __('Monitoring Bibit') }}
+                            </h2>
+                        </div>
+                        <div class="float-right">
+                            <form action="{{ action('BibitMangroveMonevController@create') }}">
+                                <button
+                                    class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded float-right">Tambah
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <hr>
                     <table class="table-auto w-full">
                         <thead>
                             <tr>
-                                <th class="px-4 py-2">Nama</th>
-                                <th class="px-4 py-2">Email</th>
-                                <th class="px-4 py-2">No Telpon</th>
-                                <th class="px-4 py-2">Hak Akses</th>
+                                <th class="px-4 py-2">Tanggal Monev</th>
+                                <th class="px-4 py-2">Tinggi Bibit</th>
+                                <th class="px-4 py-2">Jumlah Daun</th>
+                                <th class="px-4 py-2">Foto</th>
                                 <th class="">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($data as $item)
                                 <tr>
-                                    <td class="border px-4 py-2">{{ $item->name }}</td>
-                                    <td class="border px-4 py-2">{{ $item->email }}</td>
-                                    <td class="border px-4 py-2">{{ $item->telp }}</td>
+                                    <td class="border px-4 py-2">{{ $item->tglmonev }}</td>
+                                    <td class="border px-4 py-2">{{ $item->tinggibibit }}</td>
+                                    <td class="border px-4 py-2">{{ $item->jml_daun }}</td>
                                     <td class="border px-4 py-2">
-                                        @if ($item->hakakses == '2')
-                                            <div class="flex p-4 mb-4 text-sm text-green-700 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800"
-                                                role="alert">
-                                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3"
-                                                    fill="currentColor" viewBox="0 0 20 20"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <path fill-rule="evenodd"
-                                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                                        clip-rule="evenodd"></path>
-                                                </svg>
-                                                <span class="sr-only">Info</span>Admin
-
-                                            </div>
-                                        @endif
-                                        @if ($item->hakakses == '3')
-                                            <div class="flex p-4 mb-4 text-sm text-green-700 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800"
-                                                role="alert">
-                                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3"
-                                                    fill="currentColor" viewBox="0 0 20 20"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <path fill-rule="evenodd"
-                                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                                        clip-rule="evenodd"></path>
-                                                </svg>
-                                                <span class="sr-only">Info</span>Surveyor
-                                            </div>
-                                        @endif
-                                        @if ($item->hakakses == '4')
-                                            <div class="flex p-4 text-sm text-red-700 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
-                                                role="alert">
-                                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3"
-                                                    fill="currentColor" viewBox="0 0 20 20"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <path fill-rule="evenodd"
-                                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                                        clip-rule="evenodd"></path>
-                                                </svg>
-                                                Not Registerd
-                                            </div>
-                                        @endif
+                                        <img src="{{ url('/image/bibitmangrovemonev/' . $item->foto) }}" alt=""
+                                            srcset="" width="100" height="100" class="m-auto">
                                     </td>
+
                                     <td class="border text-center">
-                                        <form action="{{ route('user.destroy', $item->id) }}" method="post"
-                                            id="form_delete">
+                                        <form action="{{ route('bibitmonev.destroy', $item->idmonevbibit) }}"
+                                            method="post" id="form_delete">
 
                                             <div class="justify-center">
-                                                <a href="{{ route('user.edit', $item->id) }}" class="inline-flex pr-5">
+                                                <a href="{{ route('bibitmonev.edit', $item->idmonevbibit) }}"
+                                                    class="inline-flex pr-5">
                                                     <img src="{{ url('icon/edit.png') }}" alt="" width="20px"
                                                         height="20px">
                                                 </a>
