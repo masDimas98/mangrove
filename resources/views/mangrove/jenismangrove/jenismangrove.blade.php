@@ -93,6 +93,9 @@
                                                             class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                                             Delete
                                                         </button>
+                                                        |
+                                                        <a href="{{ route('jenisdes', $item->idjenis) }}"
+                                                            class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Detail</a>
                                                     </div>
                                                     @csrf
                                                     @method('DELETE')

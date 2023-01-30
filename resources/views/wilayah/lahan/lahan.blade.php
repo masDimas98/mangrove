@@ -11,10 +11,51 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
 
-                    <div class="mb-2">
-                        <h2 class="font-semibold text-xl text-gray-800 leading-tight pt-3 text-center">
-                            {{ __('Daftar Lahan') }}
+                    <div class="mb-2 flex flex-wrap justify-between">
+                        <h2 class="font-semibold text-xl text-gray-800 leading-tight pt-3 w:fit-content">
+                            {{ __('Daftar Kecamatan ') }}
                         </h2>
+                        <form action="" method="post" id="formSearch" class="flex">
+                            @method('GET')
+                            <label for="kecamatan_select" class="sr-only">Underline select</label>
+                            <select id="kecamatan_select"
+                                class="block py-2.5 px-0 w-32 text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer mr-4 mb-2">
+                                <option value="0" selected>Semua Kecamatan</option>
+                                @foreach ($kecamatan as $item)
+                                    @if (isset($idk))
+                                        @if ($idk == $item->idkec)
+                                            <option value="{{ $item->idkec }}" selected>{{ $item->namakec }}
+                                            </option>
+                                        @else
+                                            <option value="{{ $item->idkec }}">{{ $item->namakec }}</option>
+                                        @endif
+                                    @else
+                                        <option value="{{ $item->idkec }}">{{ $item->namakec }}</option>
+                                    @endif
+                                @endforeach
+
+                            </select>
+                            <select id="desa_select"
+                                class="block py-2.5 px-0 w-32 text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer mr-4 mb-2">
+                                <option value="0" selected>Semua Desa</option>
+                                @foreach ($desa as $item)
+                                    @if (isset($idd))
+                                        @if ($idd == $item->iddes)
+                                            <option value="{{ $item->iddes }}" selected>{{ $item->namadesa }}
+                                            </option>
+                                        @else
+                                            <option value="{{ $item->iddes }}">{{ $item->namadesa }}</option>
+                                        @endif
+                                    @else
+                                        <option value="{{ $item->iddes }}">{{ $item->namadesa }}</option>
+                                    @endif
+                                @endforeach
+
+                            </select>
+                            <button id="btn_search"
+                                class=" items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">Cari
+                            </button>
+                        </form>
                     </div>
 
                     <hr class="pb-5">
@@ -122,68 +163,62 @@
         </div>
     </div>
     <x-slot name="js">
+        <script type="text/javascript">
+            var btn = $('#btn_search');
+            var kecamatanSelect = $('#kecamatan_select');
+            var desaSelect = $('#desa_select');
+            var desa = @json($desa)
+
+            btn.click(function(e) {
+                e.preventDefault();
+                var des = desaSelect.val();
+                var kec = kecamatanSelect.val();
+                $("#formSearch").attr('action', "{{ url('/lahan/filter') }}/" + kec + "/" + des);
+                $("#formSearch").submit();
+            });
+
+            $(kecamatanSelect).change(function(e) {
+                e.preventDefault();
+                var idkec = $(this).val()
+                const found = desa.filter(element => element.idkec == idkec);
+                desaSelect.empty();
+                desaSelect.append($("<option></option>")
+                    .attr("value", "0").text("Semua Desa"));
+                if (found !== 0) {
+                    $.each(found, function(key, value) {
+                        desaSelect.append($("<option></option>")
+                            .attr("value", value.iddes).text(value.namadesa));
+                    });
+                }
+                if (idkec == 0) {
+                    $.each(desa, function(key, value) {
+                        desaSelect.append($("<option></option>")
+                            .attr("value", value.iddes).text(value.namadesa));
+                    });
+                }
+            });
+
+            // function delete() {
+            //     Swal.fire({
+            //         title: 'Are you sure?',
+            //         text: "You won't be able to revert this!",
+            //         icon: 'warning',
+            //         showCancelButton: true,
+            //         confirmButtonColor: '#3085d6',
+            //         cancelButtonColor: '#d33',
+            //         confirmButtonText: 'Yes, delete it!'
+            //     }).then((result) => {
+            //         if (result.isConfirmed) {
+            //             Swal.fire(
+            //                 'Deleted!',
+            //                 'Your file has been deleted.',
+            //                 'success'
+            //             )
+            //             // $('#form_delete').submit();
+            //         }
+            //     })
+            // }
+        </script>
     </x-slot>
 </x-app-layout>
-<script src="vendor/sweetalert/sweetalert.all.js"></script>
-<script type="text/javascript">
-    var btn = $('#btn_search');
-    var kecamatanSelect = $('#kecamatan_select');
-    var desaSelect = $('#desa_select');
-    var desa = {
-        !!json_encode($desa) !!
-    }
-
-    btn.click(function(e) {
-        e.preventDefault();
-        var des = desaSelect.val()
-        if (des != "0") {
-            $("#formSearch").attr('action', "{{ url('/lahan') }}/" + des);
-            $("#formSearch").submit();
-        } else {
-            window.location.href = "{{ url('/lahan') }}";
-        }
-    });
-
-    $(kecamatanSelect).change(function(e) {
-        e.preventDefault();
-        var idkec = $(this).val()
-        const found = desa.filter(element => element.idkec == idkec);
-        desaSelect.empty();
-        desaSelect.append($("<option></option>")
-            .attr("value", "").text("Desa"));
-        if (found !== 0) {
-            $.each(found, function(key, value) {
-                desaSelect.append($("<option></option>")
-                    .attr("value", value.iddes).text(value.namadesa));
-            });
-        }
-        if (idkec == 0) {
-            console.log(desa);
-            $.each(desa, function(key, value) {
-                desaSelect.append($("<option></option>")
-                    .attr("value", value.iddes).text(value.namadesa));
-            });
-        }
-    });
-
-    function delete() {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire(
-                    'Deleted!',
-                    'Your file has been deleted.',
-                    'success'
-                )
-                // $('#form_delete').submit();
-            }
-        })
-    }
-</script>
+{{-- <script src="vendor/sweetalert/sweetalert.all.js"></script> --}}

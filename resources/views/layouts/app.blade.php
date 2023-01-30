@@ -31,7 +31,7 @@
         </header>
 
         <!-- Page Content -->
-        <main class="flex-grow">
+        <main class="">
             {{ $slot }}
         </main>
 

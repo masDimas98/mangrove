@@ -18,7 +18,7 @@ class LahanController extends Controller
         $this->middleware('auth');
         $this->middleware(function ($request, $next) {
             if (Session::get("iddes") == true) {
-                $this->iddes = Session::get("idkec");
+                $this->iddes = Session::get("iddes");
             }
             $this->menu = array(
                 'linkF' => '/wilayah',
@@ -43,13 +43,17 @@ class LahanController extends Controller
             $data = lahan::join('desa', 'desa.iddes', '=', 'lahan.iddesa')
                 ->join('kecamatan', 'kecamatan.idkec', '=', 'desa.idkec')
                 ->get(['lahan.*', 'desa.namadesa', 'kecamatan.namakec']);
-            return view('wilayah/desa/desa', ['data' => $data, 'kecamatan' => $kecamatan, 'menu' => $this->menu]);
+            return view('wilayah/lahan/lahan', ['data' => $data, 'desa' => $desa, 'kecamatan' => $kecamatan, 'menu' => $this->menu]);
         }
+        $fil = desa::where('iddes', $this->iddes)->get(['iddes', 'idkec'])->first();
+        $idd = $fil->iddes;
+        $idk = $fil->idkec;
         $data = lahan::join('desa', 'desa.iddes', '=', 'lahan.iddesa')
             ->join('kecamatan', 'kecamatan.idkec', '=', 'desa.idkec')
             ->where('lahan.iddesa', $this->iddes)
             ->get(['lahan.*', 'desa.namadesa', 'kecamatan.namakec']);
-        return view('wilayah/lahan/lahan', ['data' => $data, 'desa' => $desa, 'kecamatan' => $kecamatan, 'menu' => $this->menu]);
+
+        return view('wilayah/lahan/lahan', ['data' => $data, 'desa' => $desa, 'kecamatan' => $kecamatan, 'menu' => $this->menu, 'idd' => $idd, 'idk' => $idk,]);
     }
 
     /**
@@ -114,7 +118,7 @@ class LahanController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, $iddes)
     {
         $kecamatan = kecamatan::all();
         $desa = desa::all();
@@ -199,5 +203,29 @@ class LahanController extends Controller
         Alert::success('Sukses', 'Menghapus Data');
 
         return redirect('lahan');
+    }
+
+    public function filter($idk, $idd)
+    {
+        $kecamatan = kecamatan::all();
+        $desa = desa::all();
+        if ($idk != 0) {
+            if ($idd != 0) {
+                $data = lahan::join('desa', 'desa.iddes', '=', 'lahan.iddesa')
+                    ->join('kecamatan', 'kecamatan.idkec', '=', 'desa.idkec')
+                    ->where('lahan.iddesa', $idd)
+                    ->get(['lahan.*', 'desa.namadesa', 'kecamatan.namakec']);
+            } else {
+                $data = lahan::join('desa', 'desa.iddes', '=', 'lahan.iddesa')
+                    ->join('kecamatan', 'kecamatan.idkec', '=', 'desa.idkec')
+                    ->where('desa.idkec', $idk)
+                    ->get(['lahan.*', 'desa.namadesa', 'kecamatan.namakec']);
+            }
+        } else {
+            $data = lahan::join('desa', 'desa.iddes', '=', 'lahan.iddesa')
+                ->join('kecamatan', 'kecamatan.idkec', '=', 'desa.idkec')
+                ->get(['lahan.*', 'desa.namadesa', 'kecamatan.namakec']);
+        }
+        return view('wilayah/lahan/lahan', ['data' => $data, 'desa' => $desa, 'kecamatan' => $kecamatan, 'idd' => $idd, 'idk' => $idk, 'menu' => $this->menu]);
     }
 }

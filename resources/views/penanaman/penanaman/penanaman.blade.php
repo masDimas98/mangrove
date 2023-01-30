@@ -11,7 +11,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
 
-                    <div>
+                    <div class=" pb-5">
                         <h2 class="font-semibold text-xl text-gray-800 leading-tight pt-3 text-center">
                             {{ __('Daftar Tanam') }}
                         </h2>

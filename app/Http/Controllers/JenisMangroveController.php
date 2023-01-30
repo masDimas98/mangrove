@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\JenisMangroveModel as jenismangrove;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class JenisMangroveController extends Controller
 {
@@ -134,5 +135,12 @@ class JenisMangroveController extends Controller
         Alert::success('Sukses', 'Menghapus Data');
 
         return redirect('jenismangrove');
+    }
+
+    public function detail($id)
+    {
+        Session::forget('idjenis');
+        Session::put('idjenis', $id);
+        return redirect('mangrove');
     }
 }

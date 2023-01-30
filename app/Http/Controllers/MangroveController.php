@@ -6,14 +6,19 @@ use App\Models\MangroveModel as mangrove;
 use App\Models\JenisMangroveModel as jenismangrove;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class MangroveController extends Controller
 {
     protected $menu;
+    protected $idjenis;
     public function __construct()
     {
         $this->middleware('auth');
         $this->middleware(function ($request, $next) {
+            if (Session::get("idjenis") == true) {
+                $this->idjenis = Session::get("idjenis");
+            }
             $this->menu = array(
                 'linkF' => '/mangrove',
                 'linkFname' => 'Mangrove',
@@ -28,7 +33,15 @@ class MangroveController extends Controller
      */
     public function index()
     {
+        $text = app('router')->getRoutes()->match(app('request')->create(url()->previous()))->getName();
         $jenis = jenismangrove::all();
+
+        if ($text == 'jenismangrove.index') {
+            $data = mangrove::join('jenis_mangrove', 'jenis_mangrove.idjenis', '=', 'mangrove.idjenis')
+                ->where('mangrove.idjenis', $this->idjenis)
+                ->get(['mangrove.*', 'jenis_mangrove.namajenislatin', 'jenis_mangrove.namajenisindo']);
+            return view('mangrove/mangrove/mangrove', ['data' => $data, 'jenismangrove' => $jenis, 'menu' => $this->menu, 'filter' => $this->idjenis]);
+        }
         $data = mangrove::join('jenis_mangrove', 'jenis_mangrove.idjenis', '=', 'mangrove.idjenis')->get(['mangrove.*', 'jenis_mangrove.namajenislatin', 'jenis_mangrove.namajenisindo']);
         return view('mangrove/mangrove/mangrove', ['data' => $data, 'jenismangrove' => $jenis, 'menu' => $this->menu]);
     }

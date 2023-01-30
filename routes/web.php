@@ -29,12 +29,14 @@ Route::resource('desa', 'DesaController');
 Route::get('/desa/{id}/detail', 'DesaController@detail')->name('detaildes');
 
 Route::resource('lahan', 'LahanController');
+Route::get('lahan/filter/{idk}/{idd}', 'LahanController@filter');
 
 Route::resource('user', 'UserController');
 
 Route::get('/wilayah', 'KecamatanController@will')->name('wilayah');
 
 Route::resource('jenismangrove', 'JenisMangroveController');
+Route::get('/jenismangrove/{id}/detail', 'JenisMangroveController@detail')->name('jenisdes');
 
 Route::resource('mangrove', 'MangroveController');
 Route::get('/mangrove/filter', 'MangroveController@filter');
