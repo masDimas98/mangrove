@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateJenisMangrovTable extends Migration
+class CreateJenisMangroveTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateJenisMangrovTable extends Migration
      */
     public function up()
     {
-        Schema::create('jenis_mangrov', function (Blueprint $table) {
+        Schema::create('jenis_mangrove', function (Blueprint $table) {
             $table->id('idjenis', 35)->autoIncrement();
             $table->string('namajenislatin', 35);
             $table->string('namajenisindo', 35);
-            $table->dateTime('dataakses');
+            $table->dateTime('dataakses')->useCurrent()->useCurrentOnUpdate();
             $table->foreignId('userid');
             $table->timestamps();
         });
@@ -30,6 +30,6 @@ class CreateJenisMangrovTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('jenis_mangrov');
+        Schema::dropIfExists('jenis_mangrove');
     }
 }

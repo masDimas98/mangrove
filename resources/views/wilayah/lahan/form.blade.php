@@ -1,7 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Wilayah') }} / {{ __('Lahan') }} / {{ __('Tambah') }}
+            {{-- {{ __('Wilayah') }} / {{ __('Lahan') }} / {{ __('Tambah') }} --}}
+            @include('components/breadscrumbs')
         </h2>
     </x-slot>
     <div class="py-12">
@@ -119,11 +120,11 @@
                                     @if ($errors->any()) value="{{ old('namalahan') }}"
                                         @else
                                         @isset($data)
-                                                value="{{ $data->namalahan }}"
+                                        value="{{ $data->namalahan }}"
                                         @endisset @endif
                                     @error('namalahan')
-                                    <strong class="font-bold text-red-500">{{ $message }}!</strong>
-                                @enderror
+                                        <strong class="font-bold text-red-500">{{ $message }}!</strong>
+                                        @enderror
                                     <p class="text-gray-600 text-xs italic dark:text-white"></p>
                             </div>
                             <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
@@ -134,13 +135,12 @@
                                 <input
                                     class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 @error('namapemilik') border-red-500 @enderror"
                                     type="text" placeholder="" name="namapemilik"
-                                    @isset($data)
-                                        @if ($errors->any())
-                                             value="{{ old('namapemilik') }}"
+                                    @isset($data) @if ($errors->any())
+                                        value="{{ old('namapemilik') }}"
                                         @else
-                                            value="{{ $data->kepemilikan }}"
+                                        value="{{ $data->kepemilikan }}"
                                         @endif
-                                    @endisset>
+                                        @endisset>
                                 @error('namapemilik')
                                     <strong class="font-bold text-red-500">{{ $message }}!</strong>
                                 @enderror
@@ -157,9 +157,9 @@
                                     class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 @error('luas') border-red-500 @enderror"
                                     type="number" placeholder="" name="luas"
                                     @if ($errors->any()) value="{{ old('luas') }}"
-                                    @else
+                                        @else
                                         @isset($data)
-                                                value="{{ $data->luas }}"
+                                        value="{{ $data->luas }}"
                                         @endisset @endif>
                                 @error('luas')
                                     <strong class="font-bold text-red-500">{{ $message }}!</strong>
@@ -177,7 +177,7 @@
                                     @if ($errors->any()) value="{{ old('latitude') }}"
                                         @else
                                         @isset($data)
-                                                value="{{ $data->latitude }}"
+                                        value="{{ $data->latitude }}"
                                         @endisset @endif>
                                 @error('latitude')
                                     <strong class="font-bold text-red-500">{{ $message }}!</strong>
@@ -195,7 +195,7 @@
                                     @if ($errors->any()) value="{{ old('longitude') }}"
                                         @else
                                         @isset($data)
-                                                value="{{ $data->longitude }}"
+                                        value="{{ $data->longitude }}"
                                         @endisset @endif>
                                 @error('longitude')
                                     <strong class="font-bold text-red-500">{{ $message }}!</strong>
@@ -221,12 +221,16 @@
             </div>
         </div>
     </div>
+    <x-slot name="js">
+    </x-slot>
 </x-app-layout>
 <script src="vendor/sweetalert/sweetalert.all.js"></script>
 <script type="text/javascript">
     var kecamatanSelect = $('#kecamatan_select');
     var desaSelect = $('#desa_select');
-    var desa = {!! json_encode($desa) !!}
+    var desa = {
+        !!json_encode($desa) !!
+    }
 
     $(kecamatanSelect).change(function(e) {
         e.preventDefault();

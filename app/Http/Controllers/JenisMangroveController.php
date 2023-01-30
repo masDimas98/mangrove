@@ -5,12 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\JenisMangroveModel as jenismangrove;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class JenisMangroveController extends Controller
 {
+    protected $menu;
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware(function ($request, $next) {
+            $this->menu = array(
+                'linkF' => '/jenisMangrove',
+                'linkFname' => 'Jenis Mangrove',
+            );
+            return $next($request);
+        });
     }
 
     /**
@@ -21,7 +30,7 @@ class JenisMangroveController extends Controller
     public function index()
     {
         $data = jenismangrove::all();
-        return view('mangrove/jenismangrove/jenismangrove', ['data' => $data]);
+        return view('mangrove/jenismangrove/jenismangrove', ['data' => $data, 'menu' => $this->menu]);
     }
 
     /**
@@ -31,7 +40,8 @@ class JenisMangroveController extends Controller
      */
     public function create()
     {
-        return view('mangrove/jenismangrove/form');
+        $this->menu += ['linkC' => '', 'linkCname' => 'Ubah Data'];
+        return view('mangrove/jenismangrove/form', ['menu' => $this->menu]);
     }
 
     /**
@@ -79,8 +89,9 @@ class JenisMangroveController extends Controller
      */
     public function edit($id)
     {
+        $this->menu += ['linkC' => '', 'linkCname' => 'Ubah Data'];
         $data = jenismangrove::where('idjenis', $id)->first();
-        return view('mangrove/jenismangrove/form', ['data' => $data]);
+        return view('mangrove/jenismangrove/form', ['data' => $data, 'menu' => $this->menu]);
     }
 
     /**
@@ -124,5 +135,12 @@ class JenisMangroveController extends Controller
         Alert::success('Sukses', 'Menghapus Data');
 
         return redirect('jenismangrove');
+    }
+
+    public function detail($id)
+    {
+        Session::forget('idjenis');
+        Session::put('idjenis', $id);
+        return redirect('mangrove');
     }
 }

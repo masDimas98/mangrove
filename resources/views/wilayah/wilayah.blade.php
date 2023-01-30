@@ -1,7 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Wilayah') }}
+            {{-- {{ __('Wilayah') }} --}}
+            @include('components/breadscrumbs')
         </h2>
     </x-slot>
 
@@ -17,7 +18,7 @@
                                     <div class="font-bold text-xl mb-2">
                                         <a href="/kecamatan">kecamatan</a>
                                     </div>
-                                    <p class="text-gray-700 text-base">3</p>
+                                    <p class="text-gray-700 text-base">{{ $kecamatan }}</p>
                                 </div>
                                 <div class="px-6 pt-4 pb-9">
                                     <div class="float-right m-0">
@@ -35,7 +36,7 @@
                                     <div class="font-bold text-xl mb-2">
                                         <a href="/desa">desa</a>
                                     </div>
-                                    <p class="text-gray-700 text-base">10</p>
+                                    <p class="text-gray-700 text-base">{{ $desa }}</p>
                                 </div>
                                 <div class="px-6 pt-4 pb-9">
                                     <div class="float-right m-0">
@@ -53,7 +54,7 @@
                                     <div class="font-bold text-xl mb-2">
                                         <a href="/lahan">lahan</a>
                                     </div>
-                                    <p class="text-gray-700 text-base">50</p>
+                                    <p class="text-gray-700 text-base">{{ $lahan }}</p>
                                 </div>
                                 <div class="px-6 pt-4 pb-9">
                                     <div class="float-right m-0">
@@ -68,4 +69,6 @@
             </div>
         </div>
     </div>
+    <x-slot name="js">
+    </x-slot>
 </x-app-layout>

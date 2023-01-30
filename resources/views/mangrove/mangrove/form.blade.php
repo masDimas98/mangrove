@@ -1,7 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Mangrove') }} / {{ __('Mangrove') }} / {{ __('Tambah') }}
+            {{-- {{ __('Mangrove') }} / {{ __('Mangrove') }} / {{ __('Tambah') }} --}}
+            @include('components/breadscrumbs')
         </h2>
     </x-slot>
 
@@ -67,7 +68,7 @@
                                     @if ($errors->any()) value="{{ old('mangrovelatin') }}"
                                         @else
                                         @isset($data)
-                                                value="{{ $data->mangrovelatin }}"
+                                        value="{{ $data->mangrovelatin }}"
                                         @endisset @endif>
                                 @error('mangrovelatin')
                                     <strong class="font-bold text-red-500">{{ $message }}!</strong>
@@ -85,7 +86,7 @@
                                     @if ($errors->any()) value="{{ old('mangroveindo') }}"
                                         @else
                                         @isset($data)
-                                                value="{{ $data->mangroveindo }}"
+                                        value="{{ $data->mangroveindo }}"
                                         @endisset @endif>
                                 @error('mangroveindo')
                                     <strong class="font-bold text-red-500">{{ $message }}!</strong>
@@ -112,4 +113,6 @@
             </div>
         </div>
     </div>
+    <x-slot name="js">
+    </x-slot>
 </x-app-layout>

@@ -17,7 +17,7 @@ class CreateDesaTable extends Migration
             $table->id('iddes', 6)->autoIncrement();
             $table->foreignId('idkec');
             $table->string('namadesa', 35);
-            $table->dateTime('dataakses');
+            $table->dateTime('dataakses')->useCurrent()->useCurrentOnUpdate();
             $table->foreignId('userid');
             $table->timestamps();
         });

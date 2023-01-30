@@ -14,50 +14,50 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/beranda', 'HomeController@beranda')->name('beranda');
+Route::get('/galeri', 'HomeController@galeri')->name('galeri');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-Route::get('/monitoring', function () {
-    return view('monitoring/monitoring');
-})->middleware(['auth'])->name('monitoring');
-
-Route::get('/monitoringdetail', function () {
-    return view('monitoring/monitoringdetail');
-})->middleware(['auth'])->name('monitoringdetail');
-
-// Route::get('/kecamatan', 'KecamatanController@index');
 
 Route::resource('kecamatan', 'KecamatanController');
+Route::get('/kecamatan/{id}/detail', 'KecamatanController@detail')->name('detailkec');
 
 Route::resource('desa', 'DesaController');
+Route::get('/desa/{id}/detail', 'DesaController@detail')->name('detaildes');
 
 Route::resource('lahan', 'LahanController');
+Route::get('lahan/filter/{idk}/{idd}', 'LahanController@filter');
 
-Route::get('/user', function () {
-    return view('user/user');
-})->middleware(['user'])->name('user');
+Route::resource('user', 'UserController');
 
-Route::get('/wilayah', function () {
-    return view('wilayah/wilayah');
-})->middleware(['auth'])->name('wilayah');
+Route::get('/wilayah', 'KecamatanController@will')->name('wilayah');
 
 Route::resource('jenismangrove', 'JenisMangroveController');
+Route::get('/jenismangrove/{id}/detail', 'JenisMangroveController@detail')->name('jenisdes');
 
 Route::resource('mangrove', 'MangroveController');
+Route::get('/mangrove/filter', 'MangroveController@filter');
 
 Route::resource('penanaman', 'PenanamanController');
+
+Route::resource('bibit', 'BibitMangroveController');
+Route::get('/bibit/{id}/detail', 'BibitMangroveController@detail')->name('monevb');
+
+Route::resource('bibitmonev', 'BibitMangroveMonevController');
+
+Route::resource('monitoring', 'MonitoringMangroveController');
+Route::get('/monitoringlist', 'PenanamanController@monitoringlist')->name('monitoringlist');
+Route::get('/penanaman/{id}/detail', 'PenanamanController@detail')->name('monitoringdetail');
+
+// Route::get('/monitoringdetail', function () {
+//     return view('monitoring/monitoringdetail');
+// })->middleware(['auth'])->name('monitoringdetail');
 
 Route::get('/detailtanaman', function () {
     return view('penanaman/detailtanaman');
 })->middleware(['auth'])->name('detailtanaman');
-
-Route::get('/user', function () {
-    return view('user/user');
-})->middleware(['auth'])->name('user');
 
 require __DIR__ . '/auth.php';

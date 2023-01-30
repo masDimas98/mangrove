@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMangrovTable extends Migration
+class CreateMangroveTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateMangrovTable extends Migration
      */
     public function up()
     {
-        Schema::create('mangrov', function (Blueprint $table) {
+        Schema::create('mangrove', function (Blueprint $table) {
             $table->id('idmangrove')->autoIncrement();
             $table->foreignId('idjenis');
             $table->string('mangrovelatin');
             $table->string('mangroveindo');
-            $table->dateTime('dataakses');
+            $table->dateTime('dataakses')->useCurrent()->useCurrentOnUpdate();
             $table->foreignId('userid');
             $table->timestamps();
         });
@@ -31,6 +31,6 @@ class CreateMangrovTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mangrov');
+        Schema::dropIfExists('mangrove');
     }
 }

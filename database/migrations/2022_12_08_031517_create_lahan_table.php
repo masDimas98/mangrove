@@ -21,7 +21,8 @@ class CreateLahanTable extends Migration
             $table->double('luas');
             $table->double('latitude');
             $table->double('longitude');
-            $table->dateTime('dataakses');
+            $table->dateTime('dataakses')->useCurrent()->useCurrentOnUpdate();
+            $table->foreignId('userid');
             $table->timestamps();
         });
     }

@@ -2,15 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DesaModel;
 use App\Models\KecamatanModel as kecamatan;
+use App\Models\LahanModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class KecamatanController extends Controller
 {
+    protected $menu;
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware(function ($request, $next) {
+            $this->menu = array(
+                'linkF' => '/wilayah',
+                'linkFname' => 'Wilayah',
+                'linkS' => '/kecamatan',
+                'linkSname' => 'Kecamatan'
+            );
+            return $next($request);
+        });
     }
 
     /**
@@ -21,7 +34,7 @@ class KecamatanController extends Controller
     public function index()
     {
         $data = kecamatan::all();
-        return view('wilayah/kecamatan/kecamatan', ['data' => $data]);
+        return view('wilayah/kecamatan/kecamatan', ['data' => $data, 'menu' => $this->menu]);
     }
 
     /**
@@ -31,7 +44,8 @@ class KecamatanController extends Controller
      */
     public function create()
     {
-        return view('wilayah/kecamatan/form');
+        $this->menu += ['linkC' => '', 'linkCname' => 'Tambah Data'];
+        return view('wilayah/kecamatan/form', ['menu' => $this->menu]);
     }
 
     /**
@@ -77,8 +91,9 @@ class KecamatanController extends Controller
      */
     public function edit($id)
     {
+        $this->menu += ['linkC' => '', 'linkCname' => 'Ubah Data'];
         $data = kecamatan::where('idkec', $id)->first();
-        return view('wilayah/kecamatan/form', ['data' => $data]);
+        return view('wilayah/kecamatan/form', ['data' => $data, 'menu' => $this->menu]);
     }
 
     /**
@@ -120,5 +135,28 @@ class KecamatanController extends Controller
         Alert::success('Sukses', 'Menghapus Data');
 
         return redirect('kecamatan');
+    }
+
+    public function will()
+    {
+        $menu = array(
+            'linkF' => '/wilayah',
+            'linkFname' => 'Wilayah',
+            'linkS' => '',
+            'linkSname' => 'Daftar Wilayah'
+        );
+
+        $kecamatan = kecamatan::all()->count();
+        $desa = DesaModel::all()->count();
+        $lahan = LahanModel::all()->count();
+
+        return view('wilayah/wilayah', ['menu' => $menu, 'kecamatan' => $kecamatan, 'desa' => $desa, 'lahan' => $lahan]);
+    }
+
+    public function detail($id)
+    {
+        Session::forget('idkec');
+        Session::put('idkec', $id);
+        return redirect('desa');
     }
 }

@@ -1,7 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Mangrove') }} / {{ __('Jenis Mangrove') }} / {{ __('Tambah') }}
+            {{-- {{ __('Mangrove') }} / {{ __('Jenis Mangrove') }} / {{ __('Tambah') }} --}}
+            @include('components/breadscrumbs')
         </h2>
     </x-slot>
 
@@ -30,10 +31,10 @@
                                 class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 @error('namajenislatin') border-red-500 @enderror"
                                 type="text" placeholder="" name="namajenislatin"
                                 @if ($errors->any()) value="{{ old('namajenislatin') }}"
-                                        @else
-                                        @isset($data)
-                                                value="{{ $data->namajenislatin }}"
-                                        @endisset @endif>
+                                    @else
+                                    @isset($data)
+                                    value="{{ $data->namajenislatin }}"
+                                    @endisset @endif>
                             @error('namajenislatin')
                                 <strong class="font-bold text-red-500">{{ $message }}!</strong>
                             @enderror
@@ -48,10 +49,10 @@
                                 class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 @error('namajenisindo') border-red-500 @enderror"
                                 type="text" placeholder="" name="namajenisindo"
                                 @if ($errors->any()) value="{{ old('namajenisindo') }}"
-                                        @else
-                                        @isset($data)
-                                                value="{{ $data->namajenisindo }}"
-                                        @endisset @endif>
+                                    @else
+                                    @isset($data)
+                                    value="{{ $data->namajenisindo }}"
+                                    @endisset @endif>
                             @error('namajenisindo')
                                 <strong class="font-bold text-red-500">{{ $message }}!</strong>
                             @enderror
@@ -75,4 +76,6 @@
             </div>
         </div>
     </div>
+    <x-slot name="js">
+    </x-slot>
 </x-app-layout>

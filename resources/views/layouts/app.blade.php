@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name') }}</title>
+    <link rel="icon" href="" />
 
     <!-- Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
@@ -18,7 +19,7 @@
 </head>
 
 <body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100">
+    <div class="h-screen bg-gray-100 flex flex-col">
         @include('layouts.navigation')
         @include('sweetalert::alert')
 
@@ -30,10 +31,24 @@
         </header>
 
         <!-- Page Content -->
-        <main>
+        <main class="">
             {{ $slot }}
         </main>
+
+        @include('layouts.footer')
     </div>
+    {{-- <script src="https://unpkg.com/flowbite@1.5.1/dist/flowbite.js"></script> --}}
+    <script>
+        $(document).ready(function() {
+            $("#table-search").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+    {{ $js }}
 </body>
 
 </html>

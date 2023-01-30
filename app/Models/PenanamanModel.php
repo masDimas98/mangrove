@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class PenanamanModel extends Model
 {
@@ -19,5 +20,10 @@ class PenanamanModel extends Model
      *
      * @var array
      */
-    protected $fillable = ['idmangrove', 'idlahan', 'idtanam', 'tgltanam', 'jmltanam', 'pihaktanam', 'statustanam', 'userid'];
+    protected $fillable = ['idmangrove', 'idlahan', 'blok_lahan', 'tgltanam', 'jmltanam', 'pihak_tanam', 'statustanam', 'userid', 'foto'];
+
+    public function getTgltanamAttribute()
+    {
+        return Carbon::parse($this->attributes['tgltanam'])->translatedFormat('l, d F Y');
+    }
 }

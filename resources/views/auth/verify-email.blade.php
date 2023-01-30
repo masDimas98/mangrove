@@ -36,4 +36,6 @@
             </form>
         </div>
     </x-auth-card>
+    <x-slot name="js">
+    </x-slot>
 </x-guest-layout>

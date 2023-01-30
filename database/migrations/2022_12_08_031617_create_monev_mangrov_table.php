@@ -15,13 +15,13 @@ class CreateMonevMangrovTable extends Migration
     {
         Schema::create('monev_mangrov', function (Blueprint $table) {
             $table->id('idmonev')->autoIncrement();
-            $table->foreignId('idmangrovesat');
-            $table->dateTime('tglmonev');
-            $table->integer('tinggi');
-            $table->string('lebarbatang');
-            $table->integer('statusmonev');
-            $table->dateTime('dataakses');
+            $table->foreignId('idtanam');
+            $table->date('tglmonev');
+            $table->integer('jml_mati');
+            $table->string('jml_hidup');
+            $table->dateTime('dataakses')->useCurrent()->useCurrentOnUpdate();
             $table->foreignId('userid');
+            $table->string('foto');
             $table->timestamps();
         });
     }
